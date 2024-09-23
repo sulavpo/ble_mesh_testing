@@ -40,6 +40,11 @@ dependencies:
   permission_handler: ^11.3.1
   flutter_blue_plus: ^1.32.12
   pull_to_refresh_flutter3: ^2.0.2
+  crypto: ^3.0.5
+  elliptic: ^0.3.11
+  pointycastle: ^3.9.1
+  nordic_nrf_mesh: ^0.13.0
+  nrf_ble_mesh_plugin: ^0.7.0
 
 dev_dependencies:
   flutter_test:
