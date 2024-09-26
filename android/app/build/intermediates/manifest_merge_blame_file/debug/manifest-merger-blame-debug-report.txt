@@ -1,0 +1,215 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.example.ble_mesh_testing"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="23"
+9        android:targetSdkVersion="34" />
+10    <!--
+11         The INTERNET permission is required for development. Specifically,
+12         the Flutter tool needs it to communicate with the running application
+13         to allow setting breakpoints, to provide hot reload, etc.
+14    -->
+15    <uses-permission android:name="android.permission.INTERNET" />
+15-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:6:5-66
+15-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:6:22-64
+16    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+16-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:3:1-75
+16-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:3:18-72
+17    <uses-permission
+17-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:4:1-64
+18        android:name="android.permission.BLUETOOTH"
+18-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:4:18-61
+19        android:maxSdkVersion="30" />
+19-->[:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-35
+20    <uses-permission
+20-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:5:1-70
+21        android:name="android.permission.BLUETOOTH_ADMIN"
+21-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:5:18-67
+22        android:maxSdkVersion="30" />
+22-->[:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:9-35
+23    <uses-permission
+23-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:6:1-69
+24        android:name="android.permission.BLUETOOTH_SCAN"
+24-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:6:18-66
+25        android:usesPermissionFlags="neverForLocation" />
+25-->[com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:24:9-55
+26    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+26-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:7:1-72
+26-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:7:18-69
+27    <!--
+28 Required to query activities that can process text, see:
+29         https://developer.android.com/training/package-visibility and
+30         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+31
+32         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin.
+33    -->
+34    <queries>
+34-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:49:5-54:15
+35        <intent>
+35-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:50:9-53:18
+36            <action android:name="android.intent.action.PROCESS_TEXT" />
+36-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:51:13-72
+36-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:51:21-70
+37
+38            <data android:mimeType="text/plain" />
+38-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:13-50
+38-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:19-48
+39        </intent>
+40        <intent>
+40-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-18:18
+41            <action android:name="android.intent.action.GET_CONTENT" />
+41-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-72
+41-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:21-69
+42
+43            <data android:mimeType="*/*" />
+43-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:13-50
+43-->/Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:19-48
+44        </intent>
+45    </queries>
+46
+47    <uses-permission
+47-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-11:38
+48        android:name="android.permission.READ_EXTERNAL_STORAGE"
+48-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-64
+49        android:maxSdkVersion="32" />
+49-->[:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:11:9-35
+50
+51    <permission
+51-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+52        android:name="com.example.ble_mesh_testing.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+52-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+53        android:protectionLevel="signature" />
+53-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+54
+55    <uses-permission android:name="com.example.ble_mesh_testing.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" /> <!-- required for API 23 - 30, no android:maxSdkVersion because of a potential breaking change -->
+55-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+55-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+56    <!-- TODO: add android:maxSdkVersion on 2.0.0 -->
+57    <uses-permission-sdk-23 android:name="android.permission.ACCESS_COARSE_LOCATION" />
+57-->[com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:18:5-88
+57-->[com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:18:29-85
+58    <uses-permission-sdk-23 android:name="android.permission.ACCESS_FINE_LOCATION" />
+58-->[com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:19:5-86
+58-->[com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:19:29-83
+59
+60    <application
+61        android:name="android.app.Application"
+62        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+62-->[androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+63        android:debuggable="true"
+64        android:enableOnBackInvokedCallback="true"
+65        android:extractNativeLibs="false"
+66        android:icon="@mipmap/ic_launcher"
+67        android:label="ble_testing" >
+68        <activity
+69            android:name="com.example.ble_mesh_testing.MainActivity"
+70            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+71            android:exported="true"
+72            android:hardwareAccelerated="true"
+73            android:launchMode="singleTop"
+74            android:taskAffinity=""
+75            android:theme="@style/LaunchTheme"
+76            android:windowSoftInputMode="adjustResize" >
+77
+78            <!--
+79                 Specifies an Android theme to apply to this Activity as soon as
+80                 the Android process has started. This theme is visible to the user
+81                 while the Flutter UI initializes. After that, this theme continues
+82                 to determine the Window background behind the Flutter UI.
+83            -->
+84            <meta-data
+85                android:name="io.flutter.embedding.android.NormalTheme"
+86                android:resource="@style/NormalTheme" />
+87
+88            <intent-filter>
+89                <action android:name="android.intent.action.MAIN" />
+90
+91                <category android:name="android.intent.category.LAUNCHER" />
+92            </intent-filter>
+93        </activity>
+94        <!--
+95             Don't delete the meta-data below.
+96             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+97        -->
+98        <meta-data
+99            android:name="flutterEmbedding"
+100            android:value="2" />
+101
+102        <uses-library
+102-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+103            android:name="androidx.window.extensions"
+103-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+104            android:required="false" />
+104-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+105        <uses-library
+105-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+106            android:name="androidx.window.sidecar"
+106-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+107            android:required="false" />
+107-->[androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+108
+109        <provider
+109-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+110            android:name="androidx.startup.InitializationProvider"
+110-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+111            android:authorities="com.example.ble_mesh_testing.androidx-startup"
+111-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+112            android:exported="false" >
+112-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+113            <meta-data
+113-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+114                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+114-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+115                android:value="androidx.startup" />
+115-->[androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+116            <meta-data
+116-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+117                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+117-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+118                android:value="androidx.startup" />
+118-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+119        </provider>
+120
+121        <receiver
+121-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+122            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+122-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+123            android:directBootAware="false"
+123-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+124            android:enabled="true"
+124-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+125            android:exported="true"
+125-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+126            android:permission="android.permission.DUMP" >
+126-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+127            <intent-filter>
+127-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+128                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+128-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+129            </intent-filter>
+130            <intent-filter>
+130-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+131                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+131-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+132            </intent-filter>
+133            <intent-filter>
+133-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+134                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+134-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+135            </intent-filter>
+136            <intent-filter>
+136-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+137                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+137-->[androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
+138            </intent-filter>
+139        </receiver>
+140    </application>
+141
+142</manifest>

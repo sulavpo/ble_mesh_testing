@@ -1,0 +1,325 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:10:5-43:19
+MERGED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e896edc40eca40ba4964bc8afde5a853/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e896edc40eca40ba4964bc8afde5a853/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+	android:name
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+manifest
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+MERGED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+MERGED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-21:12
+MERGED from [:flutter_blue_plus] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_blue_plus-1.32.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-13:12
+MERGED from [:flutter_plugin_android_lifecycle] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.22/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:nordic_nrf_mesh] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/nordic_nrf_mesh-0.13.0/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:permission_handler_android] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/permission_handler_android-12.0.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-9:12
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-17:12
+MERGED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.window:window-java:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/8beca320b4f4e4008269adc92d7bd40b/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ead05436a5aefe92f15222643c0848ce/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.8.1] /Users/sulavpoudel/.gradle/caches/transforms-3/4faf99cfa049ce4e2f4eaa3b58af9576/transformed/jetified-activity-1.8.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/967b57bffb4fbfe5dc7d6fb530f9220c/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e7af57ed3f19fe62b878a74b77915040/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e23b6adbca8b1e192d254c09d3c93694/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/09ad2e168e9ba7203a4513f0677659fa/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/025cf1f287ddfbd2fd0a6eede2d3382a/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/40156f71be274b44b855e5d9c254c6d1/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/2afc8b96496d24b1c25c510f8da7e1e9/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/410352d1dc66ae2bc4cceb40c4abdb7c/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.customview:customview:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/c402e0dc7e2ef1af36862abdbfcf0261/transformed/customview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d6118c664cfcffe6609c24c95d600b2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e920e0b7f8aaa4beb5b1c5001aee7254/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:2:1-27:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/f836ae2164d1ea590bfe666254ff3731/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7ab49a9300748488df44f4e75f44d50a/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7b50f4d7fbc5b8f0b19f213ddf341486/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e896edc40eca40ba4964bc8afde5a853/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d100f26198f5566ce2a12182f01758a4/transformed/jetified-core-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/3aebc7fed57dbc5342f9b1174d6e822f/transformed/jetified-rxandroid-2.1.1/AndroidManifest.xml:15:1-20:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/sulavpoudel/.gradle/caches/transforms-3/6c15c1b6d1ed00f039b295a22f8ebc4b/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+	package
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:1-55:12
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.ACCESS_FINE_LOCATION
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:3:1-75
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:3:18-72
+uses-permission#android.permission.BLUETOOTH
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:4:1-64
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-12:38
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-12:38
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:10:5-12:38
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:10:5-12:38
+	android:maxSdkVersion
+		ADDED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-35
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:4:18-61
+uses-permission#android.permission.BLUETOOTH_ADMIN
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:5:1-70
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-15:38
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-15:38
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:13:5-15:38
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:13:5-15:38
+	android:maxSdkVersion
+		ADDED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:9-35
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:5:18-67
+uses-permission#android.permission.BLUETOOTH_SCAN
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:6:1-69
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:22:5-25:31
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:22:5-25:31
+	android:usesPermissionFlags
+		ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:24:9-55
+	tools:targetApi
+		ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:25:9-28
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:6:18-66
+uses-permission#android.permission.BLUETOOTH_CONNECT
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:7:1-72
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:21:5-76
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:21:5-76
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:7:18-69
+queries
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:49:5-54:15
+MERGED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-19:15
+MERGED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-19:15
+intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:50:9-53:18
+action#android.intent.action.PROCESS_TEXT
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:51:13-72
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:51:21-70
+data
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:13-50
+	android:mimeType
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml:52:19-48
+uses-sdk
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+MERGED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_blue_plus] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_blue_plus-1.32.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-11:41
+MERGED from [:flutter_blue_plus] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_blue_plus-1.32.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-11:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.22/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:flutter_plugin_android_lifecycle] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.22/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:nordic_nrf_mesh] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/nordic_nrf_mesh-0.13.0/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:nordic_nrf_mesh] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/nordic_nrf_mesh-0.13.0/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/permission_handler_android-12.0.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:permission_handler_android] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/permission_handler_android-12.0.12/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [:reactive_ble_mobile] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/reactive_ble_mobile-5.3.1/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-7:41
+MERGED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/8beca320b4f4e4008269adc92d7bd40b/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/8beca320b4f4e4008269adc92d7bd40b/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ead05436a5aefe92f15222643c0848ce/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ead05436a5aefe92f15222643c0848ce/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/sulavpoudel/.gradle/caches/transforms-3/4faf99cfa049ce4e2f4eaa3b58af9576/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/sulavpoudel/.gradle/caches/transforms-3/4faf99cfa049ce4e2f4eaa3b58af9576/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/967b57bffb4fbfe5dc7d6fb530f9220c/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/967b57bffb4fbfe5dc7d6fb530f9220c/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e7af57ed3f19fe62b878a74b77915040/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e7af57ed3f19fe62b878a74b77915040/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e23b6adbca8b1e192d254c09d3c93694/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e23b6adbca8b1e192d254c09d3c93694/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/09ad2e168e9ba7203a4513f0677659fa/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/09ad2e168e9ba7203a4513f0677659fa/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/025cf1f287ddfbd2fd0a6eede2d3382a/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/025cf1f287ddfbd2fd0a6eede2d3382a/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/40156f71be274b44b855e5d9c254c6d1/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/40156f71be274b44b855e5d9c254c6d1/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/2afc8b96496d24b1c25c510f8da7e1e9/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/2afc8b96496d24b1c25c510f8da7e1e9/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/410352d1dc66ae2bc4cceb40c4abdb7c/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/410352d1dc66ae2bc4cceb40c4abdb7c/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/c402e0dc7e2ef1af36862abdbfcf0261/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/c402e0dc7e2ef1af36862abdbfcf0261/transformed/customview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d6118c664cfcffe6609c24c95d600b2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d6118c664cfcffe6609c24c95d600b2c/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e920e0b7f8aaa4beb5b1c5001aee7254/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e920e0b7f8aaa4beb5b1c5001aee7254/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:6:5-8:41
+MERGED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:6:5-8:41
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/f836ae2164d1ea590bfe666254ff3731/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/f836ae2164d1ea590bfe666254ff3731/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7ab49a9300748488df44f4e75f44d50a/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7ab49a9300748488df44f4e75f44d50a/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7b50f4d7fbc5b8f0b19f213ddf341486/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/7b50f4d7fbc5b8f0b19f213ddf341486/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e896edc40eca40ba4964bc8afde5a853/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/e896edc40eca40ba4964bc8afde5a853/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d100f26198f5566ce2a12182f01758a4/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/sulavpoudel/.gradle/caches/transforms-3/d100f26198f5566ce2a12182f01758a4/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/3aebc7fed57dbc5342f9b1174d6e822f/transformed/jetified-rxandroid-2.1.1/AndroidManifest.xml:18:5-43
+MERGED from [io.reactivex.rxjava2:rxandroid:2.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/3aebc7fed57dbc5342f9b1174d6e822f/transformed/jetified-rxandroid-2.1.1/AndroidManifest.xml:18:5-43
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/sulavpoudel/.gradle/caches/transforms-3/6c15c1b6d1ed00f039b295a22f8ebc4b/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/sulavpoudel/.gradle/caches/transforms-3/6c15c1b6d1ed00f039b295a22f8ebc4b/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/main/AndroidManifest.xml
+		INJECTED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml
+uses-permission#android.permission.INTERNET
+ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:6:5-66
+	android:name
+		ADDED from /Users/sulavpoudel/Documents/Work/ble_mesh_testing/android/app/src/debug/AndroidManifest.xml:6:22-64
+uses-permission#android.permission.READ_EXTERNAL_STORAGE
+ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-11:38
+	android:maxSdkVersion
+		ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:11:9-35
+	android:name
+		ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-64
+intent#action:name:android.intent.action.GET_CONTENT+data:mimeType:*/*
+ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-18:18
+action#android.intent.action.GET_CONTENT
+ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-72
+	android:name
+		ADDED from [:file_picker] /Users/sulavpoudel/.pub-cache/hosted/pub.dev/file_picker-8.1.2/android/build/intermediates/merged_manifest/debug/AndroidManifest.xml:15:21-69
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/sulavpoudel/.gradle/caches/transforms-3/e419ab3f04662ee37a0da09e780f2e38/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/sulavpoudel/.gradle/caches/transforms-3/ac9da675febe998b8d95ce788c1d1850/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/sulavpoudel/.gradle/caches/transforms-3/0541f5dc79259d873456895637d4487d/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+permission#com.example.ble_mesh_testing.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+uses-permission#com.example.ble_mesh_testing.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/sulavpoudel/.gradle/caches/transforms-3/10d35559f00c88cf2cbaa733cedc9a6e/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+uses-permission-sdk-23#android.permission.ACCESS_COARSE_LOCATION
+ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:18:5-88
+	android:name
+		ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:18:29-85
+uses-permission-sdk-23#android.permission.ACCESS_FINE_LOCATION
+ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:19:5-86
+	android:name
+		ADDED from [com.polidea.rxandroidble2:rxandroidble:1.16.0] /Users/sulavpoudel/.gradle/caches/transforms-3/3996ce5b59c81f4b0ad8bc3bd49026b3/transformed/jetified-rxandroidble-1.16.0/AndroidManifest.xml:19:29-83
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/sulavpoudel/.gradle/caches/transforms-3/5daeb7cb41d440ab0de46b3b24038386/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92
