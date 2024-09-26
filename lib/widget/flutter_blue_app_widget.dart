@@ -105,6 +105,7 @@
 import 'dart:async'; // Import for Timer
 import 'dart:developer';
 
+import 'package:ble_testing/screen/device_detail_sceen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -130,8 +131,13 @@ class _BleScannerState extends State<BleScanner> {
   Future<dynamic> _handleMethod(MethodCall call) async {
     switch (call.method) {
       case 'onDeviceFound':
+        Map<String, dynamic> device = Map<String, dynamic>.from(call.arguments);
+
+        // Check if the device is already in the list
+        if (devices.any((d) => d['address'] == device['address'])) return;
+
         setState(() {
-          devices.add(call.arguments);
+          devices.add(device);
         });
         break;
       default:
@@ -142,7 +148,7 @@ class _BleScannerState extends State<BleScanner> {
 
   Future<void> startScan() async {
     setState(() {
-      isScanning = true;  // Indicate that scanning has started
+      isScanning = true; // Indicate that scanning has started
       devices.clear(); // Clear the previous device list
     });
 
@@ -158,12 +164,14 @@ class _BleScannerState extends State<BleScanner> {
       if (e.code == 'PERMISSION_DENIED') {
         _showAlertDialog(
           title: 'Permission Denied',
-          content: 'Bluetooth scan permission is required for this functionality. Please grant the permission in the app settings.',
+          content:
+              'Bluetooth scan permission is required for this functionality. Please grant the permission in the app settings.',
         );
       } else {
         _showAlertDialog(
           title: 'Error',
-          content: 'An error occurred while starting the Bluetooth scan: ${e.message}',
+          content:
+              'An error occurred while starting the Bluetooth scan: ${e.message}',
         );
       }
       setState(() {
@@ -189,7 +197,7 @@ class _BleScannerState extends State<BleScanner> {
     }
 
     setState(() {
-      isScanning = false;  // Scanning is stopped
+      isScanning = false; // Scanning is stopped
     });
 
     // Cancel the timer if it hasn't already been called
@@ -231,17 +239,17 @@ class _BleScannerState extends State<BleScanner> {
       ),
       body: Column(
         children: [
-          if (isScanning) // Show loading indicator if scanning is in progress
+          if (isScanning)
             const Padding(
               padding: EdgeInsets.all(16.0),
               child: CircularProgressIndicator(),
             ),
           ElevatedButton(
-            onPressed: isScanning ? null : startScan, // Disable button when scanning
+            onPressed: isScanning ? null : startScan,
             child: const Text('Start Scan'),
           ),
           ElevatedButton(
-            onPressed: isScanning ? null : stopScan, // Disable stop if not scanning
+            onPressed: isScanning ? stopScan : null,
             child: const Text('Stop Scan'),
           ),
           Expanded(
@@ -251,12 +259,27 @@ class _BleScannerState extends State<BleScanner> {
                     itemBuilder: (context, index) {
                       final device = devices[index];
                       return ListTile(
+                        trailing: device['isMesh']
+                            ? Text(device['provisioningServiceUuid'] == '1827'
+                                ? 'UnProvisioned'
+                                : 'Provisioned')
+                            : null,
                         leading: Icon(
                           device['isMesh'] ? Icons.network_wifi : Icons.bluetooth,
                           color: device['isMesh'] ? Colors.green : Colors.blue,
                         ),
                         title: Text(device['name']),
                         subtitle: Text(device['address']),
+                        onTap: () {
+                          if (device['isMesh']) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DeviceDetailScreen(device: device),
+                              ),
+                            );
+                          }
+                        },
                       );
                     },
                   )

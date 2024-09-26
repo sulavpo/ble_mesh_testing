@@ -22,6 +22,8 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
 
     private val PERMISSION_REQUEST_CODE = 1
     private var pendingResult: MethodChannel.Result? = null
+    private var scanCallback: ScanCallback? = null
+
 
     init {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -42,83 +44,148 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
 
     private fun checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            when {
-                ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED -> {
-                    startScan()
-                }
-                ActivityCompat.shouldShowRequestPermissionRationale(context as Activity, Manifest.permission.BLUETOOTH_SCAN) -> {
-                    // Show an explanation to the user
-                    pendingResult?.error("PERMISSION_DENIED", "Bluetooth scan permission is required for this feature", null)
-                }
-                else -> {
-                    ActivityCompat.requestPermissions(
-                        context as Activity,
-                        arrayOf(Manifest.permission.BLUETOOTH_SCAN),
-                        PERMISSION_REQUEST_CODE
-                    )
-                }
+            // For Android 12+ (API level 31 and above)
+            val permissions = arrayOf(
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            if (!hasPermissions(context, *permissions)) {
+                ActivityCompat.requestPermissions(
+                    context as Activity, permissions, PERMISSION_REQUEST_CODE
+                )
+            } else {
+                startScan()
             }
         } else {
-            startScan()
+            // For Android versions below 12 (API level 31)
+            val permissions = arrayOf(
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.BLUETOOTH,
+                Manifest.permission.BLUETOOTH_ADMIN
+            )
+            if (!hasPermissions(context, *permissions)) {
+                ActivityCompat.requestPermissions(
+                    context as Activity, permissions, PERMISSION_REQUEST_CODE
+                )
+            } else {
+                startScan()
+            }
         }
+    }
+
+    private fun hasPermissions(context: Context, vararg permissions: String): Boolean {
+        for (permission in permissions) {
+            if (ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                return false
+            }
+        }
+        return true
     }
 
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         if (requestCode == PERMISSION_REQUEST_CODE) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
                 startScan()
             } else {
-                pendingResult?.error("PERMISSION_DENIED", "Bluetooth scan permission denied", null)
+                pendingResult?.error("PERMISSION_DENIED", "Necessary permissions were denied", null)
             }
         }
     }
 
-    private fun startScan() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
-            ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
-        ) {
-            pendingResult?.error("PERMISSION_DENIED", "Bluetooth scan permission not granted", null)
-            return
-        }
+   private fun startScan() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+        ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED
+    ) {
+        pendingResult?.error("PERMISSION_DENIED", "Bluetooth scan permission not granted", null)
+        return
+    }
 
-        val scanner = bluetoothAdapter.bluetoothLeScanner
-        val scanSettings = ScanSettings.Builder()
-            .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
-            .build()
+    val scanner = bluetoothAdapter.bluetoothLeScanner
+    if (scanner == null) {
+        // Log error in case the scanner is null
+        methodChannel.invokeMethod("onError", "Bluetooth LE Scanner is null, make sure Bluetooth is enabled")
+        return
+    }
 
-        val scanCallback = object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, scanResult: ScanResult) {
-                val device = scanResult.device
-                val isMesh = scanResult.scanRecord?.serviceUuids?.any { 
-                    it.uuid.toString().startsWith("0000fe")
-                } ?: false
-                
-                val deviceInfo = mapOf(
-                    "name" to (device.name ?: "Unknown"),
-                    "address" to device.address,
-                    "isMesh" to isMesh
-                )
-                methodChannel.invokeMethod("onDeviceFound", deviceInfo)
+    val scanSettings = ScanSettings.Builder()
+        .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
+        .build()
+
+    // Initialize scanCallback here
+    scanCallback = object : ScanCallback() {
+       override fun onScanResult(callbackType: Int, scanResult: ScanResult) {
+    val device = scanResult.device
+
+    // Add a debug log to verify that the callback is working
+    android.util.Log.d("BLE_SCAN", "Device found: ${device.address}")
+
+    // Check if any device is found
+    if (device == null) {
+        android.util.Log.d("BLE_SCAN", "Device is null")
+        return
+    }
+
+    // Initialize ProvisioningServiceUUID variable
+    var provisioningServiceUuid: String? = null
+
+    // Check for specific mesh service UUIDs (1827 and 1828)
+    val isMesh = scanResult.scanRecord?.serviceUuids?.any {
+        val uuidString = it.uuid.toString()
+        when (uuidString.toLowerCase()) {
+            "00001827-0000-1000-8000-00805f9b34fb" -> {
+                provisioningServiceUuid = "1827"
+                true
             }
-
-            override fun onScanFailed(errorCode: Int) {
-                methodChannel.invokeMethod("onError", "Scan failed with error code: $errorCode")
+            "00001828-0000-1000-8000-00805f9b34fb" -> {
+                provisioningServiceUuid = "1828"
+                true
             }
+            else -> false
         }
+    } ?: false
 
-        try {
-            scanner.startScan(null, scanSettings, scanCallback)
-            pendingResult?.success(null)
-        } catch (e: Exception) {
-            pendingResult?.error("SCAN_ERROR", "Failed to start scan: '${e.message}'", null)
-        } finally {
-            pendingResult = null
+    // Create a map of device info to be sent to Flutter
+    val deviceInfo = mapOf(
+        "name" to (device.name ?: "Unknown"),
+        "address" to device.address,
+        "isMesh" to isMesh,  // Identifies if it's a mesh device based on the UUID check
+        "provisioningServiceUuid" to (provisioningServiceUuid ?: "None")  // Add the provisioning service UUID to the map
+    )
+
+    // Send device information to Flutter through method channel
+    methodChannel.invokeMethod("onDeviceFound", deviceInfo)
+    android.util.Log.d("BLE_SCAN", "Device info sent to Flutter: $deviceInfo")
+}
+
+
+        override fun onScanFailed(errorCode: Int) {
+            android.util.Log.d("BLE_SCAN", "Scan failed with error code: $errorCode")
+            methodChannel.invokeMethod("onError", "Scan failed with error code: $errorCode")
         }
     }
+
+    try {
+        // Log to verify that scan is starting
+        android.util.Log.d("BLE_SCAN", "Starting scan")
+        scanner.startScan(null, scanSettings, scanCallback)
+        pendingResult?.success(null)
+    } catch (e: Exception) {
+        android.util.Log.d("BLE_SCAN", "Failed to start scan: ${e.message}")
+        pendingResult?.error("SCAN_ERROR", "Failed to start scan: '${e.message}'", null)
+    } finally {
+        pendingResult = null
+    }
+}
+
 
     private fun stopScan(result: MethodChannel.Result) {
         val scanner = bluetoothAdapter.bluetoothLeScanner
-        scanner.stopScan(object : ScanCallback() {})
+        // Use the same scanCallback that was created in startScan
+        scanCallback?.let { scanner.stopScan(it) }
         result.success(null)
     }
+
+    
+
 }
