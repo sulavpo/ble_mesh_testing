@@ -1,110 +1,6 @@
-// import 'package:ble_testing/controller/ble_controller.dart';
-// import 'package:ble_testing/controller/ble_mesh_provisioning_controller.dart';
-// // import 'package:ble_testing/nordic_nrf_mesh.dart';
-// import 'package:ble_testing/screen/bluetooth_off_screen.dart';
-// import 'package:ble_testing/screen/scanner_screen.dart';
-// import 'package:flutter/material.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:get/get.dart';
-
-// class FlutterBlueApp extends StatefulWidget {
-//   const FlutterBlueApp({super.key});
-
-//   @override
-//   State<FlutterBlueApp> createState() => _FlutterBlueAppState();
-// }
-
-// class _FlutterBlueAppState extends State<FlutterBlueApp> {
-//   //  late final NordicNrfMesh nordicNrfMesh = NordicNrfMesh();
-//   final BleController controller = Get.put(BleController());
-//   final BleMeshProvisioningController controllerProvisioning = Get.put(BleMeshProvisioningController());
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     controller.initBle();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Obx(() => controller.bluetoothOn.value
-//         ? ScannerScreen(controller: controller
-//         ,controllerProvisioning: controllerProvisioning,
-//         )
-//         : BluetoothOffScreen(controller: controller));
-//   }
-// }
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-
-// class BLEScannerScreen extends StatefulWidget {
-//   const BLEScannerScreen({super.key});
-
-//   @override
-//   _BLEScannerScreenState createState() => _BLEScannerScreenState();
-// }
-
-// class _BLEScannerScreenState extends State<BLEScannerScreen> {
-//   static const platform = MethodChannel('com.example.ble_testing/bluetooth');
-//   List<Map<String, String>> devices = [];
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     scanForBLEDevices();
-//   }
-
-//   Future<void> scanForBLEDevices() async {
-//     try {
-//       // Call the native method to scan for BLE devices
-//       final List<dynamic> result =
-//           await platform.invokeMethod('scanBLEDevices');
-
-//       // Convert result to List<Map<String, String>>
-//       List<Map<String, String>> scannedDevices = result.map((device) {
-//         return Map<String, String>.from(device);
-//       }).toList();
-
-//       // Update the device list in the UI
-//       setState(() {
-//         devices = scannedDevices;
-//       });
-//     } on PlatformException catch (e) {
-//       print("Failed to scan BLE devices: '${e.message}'.");
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('BLE Devices'),
-//       ),
-//       body: devices.isEmpty
-//           ? const Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: devices.length,
-//               itemBuilder: (context, index) {
-//                 return ListTile(
-//                   title: Text(devices[index]['name'] ?? 'Unknown'),
-//                   subtitle:
-//                       Text(devices[index]['macAddress'] ?? 'No MAC Address'),
-//                   trailing: Icon(
-//                     devices[index]['isMesh'] == 'true'
-//                         ? Icons.bluetooth_connected // Mesh device icon
-//                         : Icons.bluetooth, // Regular BLE icon
-//                   ),
-//                 );
-//               },
-//             ),
-//     );
-//   }
-// }
-
 import 'dart:async'; // Import for Timer
 import 'dart:developer';
-
+import 'package:ble_testing/controller/ble_manager.dart';
 import 'package:ble_testing/screen/device_detail_sceen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -117,7 +13,7 @@ class BleScanner extends StatefulWidget {
 }
 
 class _BleScannerState extends State<BleScanner> {
-  static const platform = MethodChannel('com.example.ble_scanner/ble');
+  final BleManager _bleManager = BleManager(); // Instantiate BleManager
   List<Map<String, dynamic>> devices = [];
   bool isScanning = false;
   Timer? _scanTimer; // Timer to stop scan after 10 seconds
@@ -125,25 +21,21 @@ class _BleScannerState extends State<BleScanner> {
   @override
   void initState() {
     super.initState();
-    platform.setMethodCallHandler(_handleMethod);
-  }
+    
+    // Set callbacks from BleManager
+    _bleManager.onDeviceFound = (device) {
+      // Check if the device is already in the list
+      if (devices.any((d) => d['address'] == device['address'])) return;
 
-  Future<dynamic> _handleMethod(MethodCall call) async {
-    switch (call.method) {
-      case 'onDeviceFound':
-        Map<String, dynamic> device = Map<String, dynamic>.from(call.arguments);
+      setState(() {
+        devices.add(device);
+      });
+    };
 
-        // Check if the device is already in the list
-        if (devices.any((d) => d['address'] == device['address'])) return;
-
-        setState(() {
-          devices.add(device);
-        });
-        break;
-      default:
-        print('Unimplemented method ${call.method}');
-        throw MissingPluginException();
-    }
+    _bleManager.onError = (error) {
+      log('Error: $error');
+      _showAlertDialog(title: 'Error', content: error);
+    };
   }
 
   Future<void> startScan() async {
@@ -153,29 +45,11 @@ class _BleScannerState extends State<BleScanner> {
     });
 
     try {
-      await platform.invokeMethod('startScan');
+      await _bleManager.startScan();
 
       // Set a timer to stop scanning after 10 seconds
       _scanTimer = Timer(const Duration(seconds: 10), () {
         stopScan();
-      });
-    } on PlatformException catch (e) {
-      log('Failed to start scan: ${e.message}');
-      if (e.code == 'PERMISSION_DENIED') {
-        _showAlertDialog(
-          title: 'Permission Denied',
-          content:
-              'Bluetooth scan permission is required for this functionality. Please grant the permission in the app settings.',
-        );
-      } else {
-        _showAlertDialog(
-          title: 'Error',
-          content:
-              'An error occurred while starting the Bluetooth scan: ${e.message}',
-        );
-      }
-      setState(() {
-        isScanning = false;
       });
     } catch (e) {
       print('An unexpected error occurred: $e');
@@ -191,9 +65,9 @@ class _BleScannerState extends State<BleScanner> {
 
   Future<void> stopScan() async {
     try {
-      await platform.invokeMethod('stopScan');
-    } on PlatformException catch (e) {
-      print("Failed to stop scan: '${e.message}'.");
+      await _bleManager.stopScan();
+    } catch (e) {
+      print("Failed to stop scan: '$e'.");
     }
 
     setState(() {

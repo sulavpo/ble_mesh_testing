@@ -1,5 +1,5 @@
+import 'package:ble_testing/controller/ble_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class DeviceDetailScreen extends StatefulWidget {
   final Map<String, dynamic> device;
@@ -11,7 +11,7 @@ class DeviceDetailScreen extends StatefulWidget {
 }
 
 class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
-  static const platform = MethodChannel('com.example.ble_scanner/ble');
+  final BleManager _bleManager = BleManager(); // Instantiate BleManager
   bool isConnecting = false;
   bool isConnected = false;
   String connectionStatus = '';
@@ -30,34 +30,34 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     });
 
     try {
-      final result = await platform.invokeMethod('connectToDevice', {'address': widget.device['address']});
+       await _bleManager.connect(widget.device['address']);
       setState(() {
         isConnecting = false;
-        isConnected = result;
+        isConnected = true;// Assume connection is successful, update logic accordingly.
         connectionStatus = isConnected ? 'Connected' : 'Connection failed';
       });
-    } on PlatformException catch (e) {
+    } catch (e) {
       setState(() {
         isConnecting = false;
         isConnected = false;
-        connectionStatus = 'Connection error: ${e.message}';
+        connectionStatus = 'Connection error: $e';
       });
     }
   }
 
-  Future<void> startProvisioning() async {
-    try {
-      final capabilities = await platform.invokeMethod('startProvisioning', {'address': widget.device['address']});
-      setState(() {
-        deviceCapabilities = capabilities;
-      });
+  // Future<void> startProvisioning() async {
+  //   try {
+  //     final capabilities = await _bleManager.startProvisioning(widget.device['address']);
+  //     setState(() {
+  //       deviceCapabilities = capabilities;
+  //     });
 
-      showCapabilitiesDialog();  // Show capabilities in a dialog
-    } on PlatformException catch (e) {
-      print('Provisioning error: ${e.message}');
-      showErrorDialog(e.message); // Handle provisioning errors
-    }
-  }
+  //     showCapabilitiesDialog(); // Show capabilities in a dialog
+  //   } catch (e) {
+  //     print('Provisioning error: $e');
+  //     showErrorDialog(e.toString()); // Handle provisioning errors
+  //   }
+  // }
 
   void showCapabilitiesDialog() {
     showDialog(
@@ -80,10 +80,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
                     Text('Input OOB Actions: ${deviceCapabilities!['inputOobActions']}'),
                   ],
                 )
-              : Text('No capabilities data available'),
+              : const Text('No capabilities data available'),
           actions: <Widget>[
             TextButton(
-              child: Text('Close'),
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -94,16 +94,16 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     );
   }
 
-  void showErrorDialog(String? errorMessage) {
+  void showErrorDialog(String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Error'),
-          content: Text(errorMessage ?? 'An error occurred'),
+          title: const Text('Error'),
+          content: Text(errorMessage),
           actions: <Widget>[
             TextButton(
-              child: Text('Close'),
+              child: const Text('Close'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -129,110 +129,16 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
             Text('Address: ${widget.device['address']}'),
             Text('Provisioning Service UUID: ${widget.device['provisioningServiceUuid']}'),
             Text('Status: ${widget.device['provisioningServiceUuid'] == '1827' ? 'UnProvisioned' : 'Provisioned'}'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text('Connection Status: $connectionStatus'),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: isConnected ? startProvisioning : null,
-              child: Text('Identify'),
-            ),
+            const SizedBox(height: 20),
+            // ElevatedButton(
+            //   onPressed: isConnected ? startProvisioning : null,
+            //   child: const Text('Identify'),
+            // ),
           ],
         ),
       ),
     );
   }
 }
-
-
-
-
-
-
-
-
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-
-// class DeviceDetailScreen extends StatefulWidget {
-//   final Map<String, dynamic> device;
-
-//   const DeviceDetailScreen({Key? key, required this.device}) : super(key: key);
-
-//   @override
-//   _DeviceDetailScreenState createState() => _DeviceDetailScreenState();
-// }
-
-// class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
-//   static const platform = MethodChannel('com.example.ble_scanner/ble');
-//   bool isConnecting = false;
-//   bool isConnected = false;
-//   String connectionStatus = '';
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     connectToDevice();
-//   }
-
-//   Future<void> connectToDevice() async {
-//     setState(() {
-//       isConnecting = true;
-//       connectionStatus = 'Connecting...';
-//     });
-
-//     try {
-//       final result = await platform.invokeMethod('connectToDevice', {'address': widget.device['address']});
-//       setState(() {
-//         isConnecting = false;
-//         isConnected = result;
-//         connectionStatus = isConnected ? 'Connected' : 'Connection failed';
-//       });
-//     } on PlatformException catch (e) {
-//       setState(() {
-//         isConnecting = false;
-//         isConnected = false;
-//         connectionStatus = 'Connection error: ${e.message}';
-//       });
-//     }
-//   }
-
-//   Future<void> startProvisioning() async {
-//     try {
-//       final capabilities = await platform.invokeMethod('startProvisioning', {'address': widget.device['address']});
-//       // Handle the capabilities response
-//       print('Device capabilities: $capabilities');
-//       // You can update the UI or navigate to a new screen to show the capabilities
-//     } on PlatformException catch (e) {
-//       print('Provisioning error: ${e.message}');
-//       // Show an error dialog or update the UI to indicate the error
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.device['name']),
-//       ),
-//       body: Padding(
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text('Name: ${widget.device['name']}'),
-//             Text('Address: ${widget.device['address']}'),
-//             Text('Provisioning Service UUID: ${widget.device['provisioningServiceUuid']}'),
-//             Text('Status: ${widget.device['provisioningServiceUuid'] == '1827' ? 'UnProvisioned' : 'Provisioned'}'),
-//             SizedBox(height: 20),
-//             Text('Connection Status: $connectionStatus'),
-//             SizedBox(height: 20),
-//             ElevatedButton(
-//               onPressed: isConnected ? startProvisioning : null,
-//               child: Text('Identify'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
