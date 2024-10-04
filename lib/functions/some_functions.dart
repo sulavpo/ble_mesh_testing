@@ -1,73 +1,65 @@
 import 'package:ble_testing/functions/mesh_sdk_manager.dart';
+import 'package:flutter/material.dart';
 
-void someFunction() async {
+void someFunction(BuildContext context) async {
   try {
-    print('Updating mesh username and password...');
-    await MeshSdkManager.updateMeshUserNameAndPassword('Test', '1234');
+    // Initialize the CNMeshMethodChannel with the context
+    CNMeshMethodChannel.instance.configureChannel(context);
 
-    print('Starting provision mode...');
-    await MeshSdkManager.startProvisionMode();
-
-    print('Getting factory mesh devices...');
-    List<Map<String, dynamic>> factoryDevices =
-        await MeshSdkManager.getFactoryMeshDevices();
-    for (var device in factoryDevices) {
-      print('Found device: ${MeshDevice.fromMap(device).macAddress}');
+    print('Starting scan for devices...');
+    bool scanStarted = await CNMeshMethodChannel.instance.startScanDevices(true);
+    if (!scanStarted) {
+      print('Failed to start scanning for devices.');
+      return;
     }
-    print('Provisioning device: 08:D1:F9:1E:D9:76');
-    bool provisionSuccess =
-        await MeshSdkManager.provisionDevice('08:D1:F9:1E:D9:76', 1, 32769);
-    if (provisionSuccess) {
-      print('Device provisioned successfully');
 
-      print('Sending "On" command...');
-      bool commandSuccess =
-          await MeshSdkManager.sendCommand(1, 'On', {'delay': 0});
-      if (commandSuccess) {
-        print('Command sent successfully');
+    // After scanning, retrieve factory devices
+    print('Getting factory mesh devices...');
+    bool factoryDevicesRetrieved = await CNMeshMethodChannel.instance.getFactoryDevices();
+    
+    if (factoryDevicesRetrieved) {
+      print('Factory devices retrieved successfully.');
+      // You should handle displaying the devices to the user here
+
+      // For demonstration, we'll assume you want to provision a specific device.
+      String macToProvision = '08:D1:F9:1E:D9:76';  // Replace with actual mac address from devices
+      int groupAddress = 1;
+      print('Provisioning device: $macToProvision');
+      int provisionResult = await CNMeshMethodChannel.instance.provisionDevice(macToProvision, groupAddress);
+
+      if (provisionResult != 0) {
+        print('Device provisioned successfully.');
+
+        // Send a command to turn on the light
+        print('Sending "On" command...');
+        bool lightOn = await CNMeshMethodChannel.instance.lightOn(provisionResult);
+        if (lightOn) {
+          print('Light turned on successfully.');
+        } else {
+          print('Failed to turn on the light.');
+        }
+
+        // Optionally, you can send other commands, like multiple commands.
+        print('Sending multiple commands...');
+
+        // Example commands:
+        bool brightnessSet = await CNMeshMethodChannel.instance.brightness(provisionResult, 50);
+        bool colorSet = await CNMeshMethodChannel.instance.color(provisionResult, 255, 0, 0);  // Red color
+        bool sceneLoaded = await CNMeshMethodChannel.instance.loadScene(1);  // Loading scene 1, for example
+
+        if (brightnessSet && colorSet && sceneLoaded) {
+          print('Multiple commands sent successfully.');
+        } else {
+          print('Failed to send multiple commands.');
+        }
+
       } else {
-        print('Failed to send command');
+        print('Failed to provision device.');
       }
     } else {
-      print('Failed to provision device');
+      print('Failed to retrieve factory devices.');
     }
 
-    if (factoryDevices.isNotEmpty) {
-      String macToProvision = factoryDevices.first['macAddress'];
-
-      if (provisionSuccess) {
-        print('Device provisioned successfully');
-
-        print('Sending "On" command...');
-        bool commandSuccess =
-            await MeshSdkManager.sendCommand(1, 'On', {'delay': 0});
-        if (commandSuccess) {
-          print('Command sent successfully');
-        } else {
-          print('Failed to send command');
-        }
-      } else {
-        print('Failed to provision device');
-      }
-
-      print('Sending multiple commands...');
-      List<MeshCommand> commands = [
-        BlinkCommand(delay: 0),
-        OnCommand(delay: 2000),
-        OffCommand(delay: 2000),
-        BrightnessCommand(brightness: 50, delay: 2000),
-      ];
-
-      bool multiCommandSuccess = await MeshSdkManager.connectAndSendCommand(
-        macToProvision,
-        commands.map((c) => c.toMap()).toList(),
-      );
-      if (multiCommandSuccess) {
-        print('Multiple commands sent successfully');
-      } else {
-        print('Failed to send multiple commands');
-      }
-    }
   } catch (e) {
     print('Error in someFunction: $e');
   }

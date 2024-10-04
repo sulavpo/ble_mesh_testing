@@ -1,22 +1,15 @@
-package com.example.ble_testing
+package com.fantom.hypnotik
 
-import MeshSdkManager
-import io.flutter.embedding.android.FlutterActivity
+import androidx.activity.viewModels
+import androidx.annotation.NonNull
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.plugin.common.MethodChannel
 
-class MainActivity: FlutterActivity() {
-    private val CHANNEL = "com.example.ble_scanner/ble"
-    private lateinit var meshSdkManager: MeshSdkManager
+class MainActivity: FlutterFragmentActivity() {
+    private val meshViewModel: MeshViewModel by viewModels()
 
-    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        
-        meshSdkManager = MeshSdkManager(applicationContext)
-        
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL).setMethodCallHandler { call, result ->
-            meshSdkManager.onMethodCall(call, result)
-        }
+        NativeMethodChannel.configureChannel(flutterEngine, meshViewModel, this)
     }
 }
-

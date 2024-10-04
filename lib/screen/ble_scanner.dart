@@ -1,6 +1,5 @@
-import 'package:ble_testing/functions/some_functions.dart';
-import 'package:flutter/material.dart';
 import 'package:ble_testing/functions/mesh_sdk_manager.dart';
+import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BleMeshScannerTesting extends StatefulWidget {
@@ -17,13 +16,11 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
   @override
   void initState() {
     super.initState();
-    someFunction();
-
-    // _initializeScanning();
+    _initializeScanning();
   }
 
   Future<void> _initializeScanning() async {
-    bool hasPermissions = true;
+    bool hasPermissions = await _checkAndRequestPermissions();
     if (hasPermissions) {
       startScanning();
     }
@@ -49,21 +46,34 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
     });
 
     try {
-      await MeshSdkManager.startProvisionMode();
+      // Configure the method channel before scanning
+      CNMeshMethodChannel.instance.configureChannel(context);
 
-      List<Map<String, dynamic>> factoryDevices =
-          await MeshSdkManager.getFactoryMeshDevices();
-      List<Map<String, dynamic>> provisionedDevices =
-          await MeshSdkManager.getProvisionedMeshDevices();
-      List<Map<String, dynamic>> gateways = await MeshSdkManager.getGateways();
+      print('Starting scan for devices...');
+      bool scanStarted = await CNMeshMethodChannel.instance.startScanDevices(true);
+      if (!scanStarted) {
+        print('Failed to start scanning.');
+        _showErrorSnackBar('Failed to start scanning.');
+        return;
+      }
 
-      setState(() {
-        devices.addAll(
-            factoryDevices.map((d) => MeshDevice.fromMap(d, isFactory: true)));
-        devices.addAll(provisionedDevices
-            .map((d) => MeshDevice.fromMap(d, isFactory: false)));
-        devices.addAll(gateways.map((d) => MeshDevice.fromGatewayMap(d)));
-      });
+      // Fetch factory devices
+      bool factoryDevicesRetrieved = await CNMeshMethodChannel.instance.getFactoryDevices();
+      if (factoryDevicesRetrieved) {
+        print('Factory devices retrieved successfully.');
+        // Retrieve the devices from the method channel (dummy example here)
+        List<MeshDevice> retrievedDevices = [
+          MeshDevice(macAddress: '08:D1:F9:1E:D9:76', isProvisioned: false, isGateway: false),
+          // Add more devices as needed
+        ];
+
+        setState(() {
+          devices.addAll(retrievedDevices);
+        });
+      } else {
+        print('Failed to retrieve factory devices.');
+        _showErrorSnackBar('Failed to retrieve factory devices.');
+      }
     } catch (e) {
       print("Error during scanning: $e");
       _showErrorSnackBar('Failed to start scanning: ${e.toString()}');
@@ -82,15 +92,15 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
 
   Future<void> provisionDevice(MeshDevice device) async {
     try {
-      // For simplicity, we're using fixed values for meshAddress and groupAddress
-      // In a real application, you'd want to manage these addresses properly
-      bool success =
-          await MeshSdkManager.provisionDevice(device.macAddress, 1, 32769);
-      if (success) {
-        _showErrorSnackBar('Device provisioned successfully');
+      // Call the provision method from CNMeshMethodChannel
+      print('Provisioning device: ${device.macAddress}');
+      int provisionResult = await CNMeshMethodChannel.instance.provisionDevice(device.macAddress, 1);
+
+      if (provisionResult != 0) {
+        _showErrorSnackBar('Device provisioned successfully.');
         startScanning(); // Refresh the list
       } else {
-        _showErrorSnackBar('Failed to provision device');
+        _showErrorSnackBar('Failed to provision device.');
       }
     } catch (e) {
       print("Error during device provisioning: $e");
@@ -112,14 +122,15 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
         ),
         body: Center(
           child: ElevatedButton(
-            child: const Text('Hello'),
+            child: const Text('Provision Device'),
             onPressed: () {
-              someFunction();
-              provisionDevice(MeshDevice(
+              provisionDevice(
+                MeshDevice(
                   macAddress: '08:D1:F9:1E:D9:76',
-                  // "D8:13:2A:2C:E8:A6",
                   isProvisioned: false,
-                  isGateway: false));
+                  isGateway: false,
+                ),
+              );
             },
           ),
         ));
@@ -137,8 +148,7 @@ class MeshDevice {
     required this.isGateway,
   });
 
-  factory MeshDevice.fromMap(Map<String, dynamic> map,
-      {required bool isFactory}) {
+  factory MeshDevice.fromMap(Map<String, dynamic> map, {required bool isFactory}) {
     return MeshDevice(
       macAddress: map['macAddress'] as String? ?? '',
       isProvisioned: !isFactory,
