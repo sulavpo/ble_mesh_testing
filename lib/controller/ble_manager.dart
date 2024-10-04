@@ -9,6 +9,9 @@ class BleManager {
   Function(List<Map<String, dynamic>>)? onServicesDiscovered;
   Function(Map<String, dynamic>)? onCharacteristicRead;
   Function(Map<String, dynamic>)? onCharacteristicWrite;
+  Function(Map<String, dynamic>)? onProvisioningComplete;
+  Function(Map<String, dynamic>)? onProvisioningStateChanged;
+  Function(Map<String, dynamic>)? onCapabilitiesReceived;
   Function(String)? onError;
 
   BleManager() {
@@ -31,6 +34,15 @@ class BleManager {
         break;
       case 'onCharacteristicWrite':
         onCharacteristicWrite?.call(Map<String, dynamic>.from(call.arguments));
+        break;
+      case 'onProvisioningComplete':
+        onProvisioningComplete?.call(Map<String, dynamic>.from(call.arguments));
+        break;
+      case 'onProvisioningStateChanged':
+        onProvisioningStateChanged?.call(Map<String, dynamic>.from(call.arguments));
+        break;
+      case 'onCapabilitiesReceived':
+        onCapabilitiesReceived?.call(Map<String, dynamic>.from(call.arguments));
         break;
       case 'onError':
         onError?.call(call.arguments as String);
@@ -96,6 +108,15 @@ class BleManager {
     } on PlatformException catch (e) {
       print('Failed to write characteristic: ${e.message}');
       onError?.call('Failed to write characteristic: ${e.message}');
+    }
+  }
+
+  Future<void> provisionDevice(String address) async {
+    try {
+      await _channel.invokeMethod('provisionDevice', {'address': address});
+    } on PlatformException catch (e) {
+      print('Failed to start provisioning: ${e.message}');
+      onError?.call('Failed to start provisioning: ${e.message}');
     }
   }
 }

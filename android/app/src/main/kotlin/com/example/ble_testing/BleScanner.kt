@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.app.Activity
+import android.util.Log
 import java.util.*
 
 class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
@@ -28,6 +29,22 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     private var scanCallback: ScanCallback? = null
     private var gatt: BluetoothGatt? = null
     private val handler = Handler(Looper.getMainLooper())
+
+
+
+    // Provisioning-related variables
+    private lateinit var provisioningData: ByteArray
+    private lateinit var publicKey: ByteArray
+    private lateinit var privateKey: ByteArray
+    private var isProvisioning = false
+    private lateinit var provisionee: BluetoothDevice
+    private var provisioningStep = ProvisioningStep.IDLE
+
+    private enum class ProvisioningStep {
+        IDLE, BEACONING, INVITATION, CAPABILITIES, PUBLIC_KEY_EXCHANGE, AUTHENTICATION, DATA_TRANSFER
+    }
+
+
 
 
 
@@ -69,6 +86,14 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                         writeCharacteristic(serviceUuid, characteristicUuid, value, result)
                     } else {
                         result.error("INVALID_ARGUMENT", "Service UUID, Characteristic UUID, and value are required", null)
+                    }
+                }
+               "provisionDevice" -> {
+                    val deviceAddress = call.argument<String>("address")
+                    if (deviceAddress != null) {
+                        provisionDevice(deviceAddress, result)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Device address is required", null)
                     }
                 }
                 else -> result.notImplemented()
@@ -383,6 +408,188 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
         result?.success(null)
     }
 
+     @SuppressLint("MissingPermission")
+    private fun provisionDevice(address: String, result: MethodChannel.Result) {
+        val device = bluetoothAdapter.getRemoteDevice(address)
+        if (device == null) {
+            result.error("DEVICE_NOT_FOUND", "Could not find device with address $address", null)
+            return
+        }
 
+        provisionee = device
+        isProvisioning = true
+        provisioningStep = ProvisioningStep.BEACONING
+        
+        // Generate keys for provisioning
+        val keyPair = generateECDHKeyPair()
+        publicKey = keyPair.public
+        privateKey = keyPair.private
+
+        // Step 1: Beaconing
+        sendProvisioningBeacon()
+
+        result.success(null)
+    }
+
+    private fun sendProvisioningBeacon() {
+        Log.d("BleScanner", "Sending provisioning beacon to ${provisionee.address}")
+        updateProvisioningState("Sending provisioning beacon")
+        
+        // Simulate sending a beacon
+        handler.postDelayed({
+            // Move to the next step: Invitation
+            provisioningStep = ProvisioningStep.INVITATION
+            sendInvitation()
+        }, 1000)
+    }
+
+    private fun sendInvitation() {
+        Log.d("BleScanner", "Sending invitation to ${provisionee.address}")
+        updateProvisioningState("Sending invitation")
+        
+        // Simulate sending an invitation
+        handler.postDelayed({
+            // Move to the next step: Capabilities
+            provisioningStep = ProvisioningStep.CAPABILITIES
+            receiveCapabilities()
+        }, 1000)
+    }
+
+    private fun receiveCapabilities() {
+        Log.d("BleScanner", "Receiving capabilities from ${provisionee.address}")
+        updateProvisioningState("Receiving capabilities")
+        
+        // Simulate receiving capabilities
+        val capabilities = DeviceCapabilities(
+            numberOfElements = 2,
+            algorithms = listOf("FIPS P-256 Elliptic Curve"),
+            publicKeyType = "OOB Public Key",
+            staticOOBType = "Static OOB supported",
+            outputOOBSize = 8,
+            outputOOBActions = listOf("Blink", "Beep", "Vibrate", "Output Numeric"),
+            inputOOBSize = 8,
+            inputOOBActions = listOf("Push", "Twist", "Input Numeric")
+        )
+        
+        // Send capabilities to Flutter
+        methodChannel.invokeMethod("onCapabilitiesReceived", capabilities.toMap())
+        
+        handler.postDelayed({
+            // Move to the next step: Public Key Exchange
+            provisioningStep = ProvisioningStep.PUBLIC_KEY_EXCHANGE
+            exchangePublicKeys()
+        }, 1000)
+    }
+
+    private fun exchangePublicKeys() {
+        Log.d("BleScanner", "Exchanging public keys with ${provisionee.address}")
+        updateProvisioningState("Exchanging public keys")
+        
+        // Simulate exchanging public keys
+        handler.postDelayed({
+            // Move to the next step: Authentication
+            provisioningStep = ProvisioningStep.AUTHENTICATION
+            authenticate()
+        }, 1000)
+    }
+
+    private fun authenticate() {
+        Log.d("BleScanner", "Authenticating with ${provisionee.address}")
+        updateProvisioningState("Authenticating")
+        
+        // Simulate authentication
+        handler.postDelayed({
+            // Move to the next step: Data Transfer
+            provisioningStep = ProvisioningStep.DATA_TRANSFER
+            transferProvisioningData()
+        }, 1000)
+    }
+
+    private fun transferProvisioningData() {
+        Log.d("BleScanner", "Transferring provisioning data to ${provisionee.address}")
+        updateProvisioningState("Transferring provisioning data")
+        
+        // Create and transfer provisioning data
+        provisioningData = createProvisioningData()
+        
+        // Simulate data transfer
+        handler.postDelayed({
+            finalizeProvisioning()
+        }, 1000)
+    }
+
+    private fun finalizeProvisioning() {
+        Log.d("BleScanner", "Finalizing provisioning for ${provisionee.address}")
+        
+        isProvisioning = false
+        provisioningStep = ProvisioningStep.IDLE
+        
+        // Simulate success (in real implementation, check for actual success)
+        val success = true
+        
+        if (success) {
+            updateProvisioningState("Provisioning successful")
+            // Notify Flutter that provisioning is complete
+            methodChannel.invokeMethod("onProvisioningComplete", mapOf(
+                "address" to provisionee.address,
+                "success" to true
+            ))
+        } else {
+            updateProvisioningState("Provisioning failed")
+            // Notify Flutter that provisioning failed
+            methodChannel.invokeMethod("onProvisioningComplete", mapOf(
+                "address" to provisionee.address,
+                "success" to false
+            ))
+        }
+    }
+
+    private fun updateProvisioningState(state: String) {
+        methodChannel.invokeMethod("onProvisioningStateChanged", mapOf(
+            "address" to provisionee.address,
+            "state" to state
+        ))
+    }
+
+    private fun generateECDHKeyPair(): ECDHKeyPair {
+        // In a real implementation, generate actual ECDH key pair
+        // For this example, we'll just create dummy byte arrays
+        return ECDHKeyPair(
+            ByteArray(32) { 1 },  // public key
+            ByteArray(32) { 2 }   // private key
+        )
+    }
+
+    private fun createProvisioningData(): ByteArray {
+        // In a real implementation, create actual provisioning data
+        // For this example, we'll just create a dummy byte array
+        return ByteArray(16) { it.toByte() }
+    }
+
+    data class ECDHKeyPair(val public: ByteArray, val private: ByteArray)
+
+    data class DeviceCapabilities(
+        val numberOfElements: Int,
+        val algorithms: List<String>,
+        val publicKeyType: String,
+        val staticOOBType: String,
+        val outputOOBSize: Int,
+        val outputOOBActions: List<String>,
+        val inputOOBSize: Int,
+        val inputOOBActions: List<String>
+    ) {
+        fun toMap(): Map<String, Any> {
+            return mapOf(
+                "numberOfElements" to numberOfElements,
+                "algorithms" to algorithms,
+                "publicKeyType" to publicKeyType,
+                "staticOOBType" to staticOOBType,
+                "outputOOBSize" to outputOOBSize,
+                "outputOOBActions" to outputOOBActions,
+                "inputOOBSize" to inputOOBSize,
+                "inputOOBActions" to inputOOBActions
+            )
+        }
+    }
 
 }

@@ -11,7 +11,7 @@ class DeviceDetailScreen extends StatefulWidget {
 }
 
 class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
-  final BleManager _bleManager = BleManager(); // Instantiate BleManager
+  final BleManager _bleManager = BleManager();
   bool isConnecting = false;
   bool isConnected = false;
   String connectionStatus = '';
@@ -21,6 +21,30 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
   void initState() {
     super.initState();
     connectToDevice();
+    _setupBleListeners();
+  }
+
+  void _setupBleListeners() {
+    _bleManager.onProvisioningComplete = (capabilities) {
+      setState(() {
+        deviceCapabilities = capabilities;
+        connectionStatus = 'Provisioning completed successfully.';
+      });
+      showCapabilitiesDialog();
+    };
+
+    _bleManager.onError = (error) {
+      setState(() {
+        connectionStatus = 'Error: $error';
+      });
+      showErrorDialog(error);
+    };
+
+    _bleManager.onProvisioningStateChanged = (state) {
+      setState(() {
+        connectionStatus = 'Provisioning state: ${state['state']}';
+      });
+    };
   }
 
   Future<void> connectToDevice() async {
@@ -30,10 +54,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     });
 
     try {
-       await _bleManager.connect(widget.device['address']);
+      await _bleManager.connect(widget.device['address']);
       setState(() {
         isConnecting = false;
-        isConnected = true;// Assume connection is successful, update logic accordingly.
+        isConnected = true; // Assume connection is successful
         connectionStatus = isConnected ? 'Connected' : 'Connection failed';
       });
     } catch (e) {
@@ -45,19 +69,19 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     }
   }
 
-  // Future<void> startProvisioning() async {
-  //   try {
-  //     final capabilities = await _bleManager.startProvisioning(widget.device['address']);
-  //     setState(() {
-  //       deviceCapabilities = capabilities;
-  //     });
-
-  //     showCapabilitiesDialog(); // Show capabilities in a dialog
-  //   } catch (e) {
-  //     print('Provisioning error: $e');
-  //     showErrorDialog(e.toString()); // Handle provisioning errors
-  //   }
-  // }
+  Future<void> startProvisioning() async {
+    try {
+      await _bleManager.provisionDevice(widget.device['address']);
+      setState(() {
+        connectionStatus = 'Provisioning started...';
+      });
+    } catch (e) {
+      setState(() {
+        connectionStatus = 'Provisioning error: $e';
+      });
+      showErrorDialog(e.toString());
+    }
+  }
 
   void showCapabilitiesDialog() {
     showDialog(
@@ -132,10 +156,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
             const SizedBox(height: 20),
             Text('Connection Status: $connectionStatus'),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: isConnected ? startProvisioning : null,
-            //   child: const Text('Identify'),
-            // ),
+            ElevatedButton(
+              onPressed: isConnected ? startProvisioning : null,
+              child: const Text('Identify'),
+            ),
           ],
         ),
       ),
