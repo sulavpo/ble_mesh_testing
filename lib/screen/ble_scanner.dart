@@ -17,6 +17,8 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
   @override
   void initState() {
     super.initState();
+    someFunction();
+
     // _initializeScanning();
   }
 
@@ -113,10 +115,11 @@ class _BleMeshScannerTestingState extends State<BleMeshScannerTesting> {
             child: const Text('Hello'),
             onPressed: () {
               someFunction();
-              // provisionDevice(MeshDevice(
-              //     macAddress: '08:D1:F9:1E:D9:76',
-              //     isProvisioned: false,
-              //     isGateway: true));
+              provisionDevice(MeshDevice(
+                  macAddress: '08:D1:F9:1E:D9:76',
+                  // "D8:13:2A:2C:E8:A6",
+                  isProvisioned: false,
+                  isGateway: false));
             },
           ),
         ));

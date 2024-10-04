@@ -38,15 +38,15 @@ class MeshSdkManager {
     }
   }
 
-  static Future<List<Map<String, dynamic>>> getFactoryMeshDevices() async {
-    try {
-      final List<dynamic> result = await _channel.invokeMethod('getFactoryMeshDevices');
-      return result.cast<Map<String, dynamic>>();
-    } catch (e) {
-      _handleError(e);
-      return [];
-    }
+static Future<List<Map<String, dynamic>>> getFactoryMeshDevices() async {
+  try {
+    final List<dynamic> result = await _channel.invokeMethod('getFactoryMeshDevices');
+    return result.cast<Map<String, dynamic>>();
+  } catch (e) {
+    print('Error getting factory mesh devices: $e');
+    return [];
   }
+}
 
   static Future<List<Map<String, dynamic>>> getProvisionedMeshDevices() async {
     try {
