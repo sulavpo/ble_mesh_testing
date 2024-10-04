@@ -56,3 +56,11 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation "com.cosmicnode:cnmesh:0.0.1"
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation "androidx.browser:browser:1.5.0"
+}

@@ -1,3 +1,4 @@
+import 'package:ble_testing/screen/ble_scanner.dart';
 import 'package:ble_testing/widget/flutter_blue_app_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home:  BleScanner(),
+      home:  BleMeshScannerTesting(),
     );
   }
 }

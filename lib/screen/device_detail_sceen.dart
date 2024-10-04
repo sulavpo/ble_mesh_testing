@@ -45,19 +45,19 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     }
   }
 
-  // Future<void> startProvisioning() async {
-  //   try {
-  //     final capabilities = await _bleManager.startProvisioning(widget.device['address']);
-  //     setState(() {
-  //       deviceCapabilities = capabilities;
-  //     });
+  Future<void> startProvisioning() async {
+    try {
+      final capabilities = await _bleManager.startProvisioning(widget.device['address']);
+      setState(() {
+        deviceCapabilities = capabilities;
+      });
 
-  //     showCapabilitiesDialog(); // Show capabilities in a dialog
-  //   } catch (e) {
-  //     print('Provisioning error: $e');
-  //     showErrorDialog(e.toString()); // Handle provisioning errors
-  //   }
-  // }
+      showCapabilitiesDialog(); // Show capabilities in a dialog
+    } catch (e) {
+      print('Provisioning error: $e');
+      showErrorDialog(e.toString()); // Handle provisioning errors
+    }
+  }
 
   void showCapabilitiesDialog() {
     showDialog(
@@ -132,10 +132,10 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
             const SizedBox(height: 20),
             Text('Connection Status: $connectionStatus'),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: isConnected ? startProvisioning : null,
-            //   child: const Text('Identify'),
-            // ),
+            ElevatedButton(
+              onPressed: isConnected ? startProvisioning : null,
+              child: const Text('Identify'),
+            ),
           ],
         ),
       ),

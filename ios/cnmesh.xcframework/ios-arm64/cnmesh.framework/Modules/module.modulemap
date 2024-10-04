@@ -1,0 +1,8 @@
+framework module cnmesh {
+    umbrella header "cnmesh.h"
+
+    export *
+    module * { export * }
+
+    use Foundation
+}
