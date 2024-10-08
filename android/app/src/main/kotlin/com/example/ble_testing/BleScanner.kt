@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.app.Activity
+import android.util.Log
 import java.util.*
 
 class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
@@ -28,8 +29,16 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     private var scanCallback: ScanCallback? = null
     private var gatt: BluetoothGatt? = null
     private val handler = Handler(Looper.getMainLooper())
+    private val EXPECTED_DATA_SIZE = 32 // for example, if the data must be 32 bytes
 
-
+    // Provisioning-specific variables
+    private var provisioningState: ProvisioningState = ProvisioningState.IDLE
+    private lateinit var provisioningDevice: BluetoothDevice
+    private var provisioningServiceUuid: UUID? = null
+    private var provisioningCharacteristicUuid: UUID? = null
+    private var isServiceDiscoveryComplete = false
+    private var retryCount = 0
+    private val MAX_RETRIES = 3
 
     init {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -52,23 +61,53 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                     }
                 }
                 "disconnect" -> disconnect(result)
-                "readCharacteristic" -> {
-                    val serviceUuid = call.argument<String>("serviceUuid")
-                    val characteristicUuid = call.argument<String>("characteristicUuid")
-                    if (serviceUuid != null && characteristicUuid != null) {
-                        readCharacteristic(serviceUuid, characteristicUuid, result)
+                "startProvisioning" -> {
+                    val deviceAddress = call.argument<String>("address")
+                    if (deviceAddress != null) {
+                        startProvisioning(deviceAddress, result)
                     } else {
-                        result.error("INVALID_ARGUMENT", "Service UUID and Characteristic UUID are required", null)
+                        result.error("INVALID_ARGUMENT", "Device address is required", null)
                     }
                 }
-                "writeCharacteristic" -> {
-                    val serviceUuid = call.argument<String>("serviceUuid")
-                    val characteristicUuid = call.argument<String>("characteristicUuid")
-                    val value = call.argument<ByteArray>("value")
-                    if (serviceUuid != null && characteristicUuid != null && value != null) {
-                        writeCharacteristic(serviceUuid, characteristicUuid, value, result)
+                "sendProvisioningInvite" -> {
+                    val attentionDuration = call.argument<Int>("attentionDuration")
+                    if (attentionDuration != null) {
+                        sendProvisioningInvite(attentionDuration, result)
                     } else {
-                        result.error("INVALID_ARGUMENT", "Service UUID, Characteristic UUID, and value are required", null)
+                        result.error("INVALID_ARGUMENT", "Attention duration is required", null)
+                    }
+                }
+                "sendProvisioningStart" -> sendProvisioningStart(result)
+                "sendProvisioningPublicKey" -> {
+                    val publicKey = call.argument<ByteArray>("publicKey")
+                    if (publicKey != null) {
+                        sendProvisioningPublicKey(publicKey, result)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Public key is required", null)
+                    }
+                }
+                "sendProvisioningConfirmation" -> {
+                    val confirmation = call.argument<ByteArray>("confirmation")
+                    if (confirmation != null) {
+                        sendProvisioningConfirmation(confirmation, result)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Confirmation data is required", null)
+                    }
+                }
+                "sendProvisioningRandom" -> {
+                    val random = call.argument<ByteArray>("random")
+                    if (random != null) {
+                        sendProvisioningRandom(random, result)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Random data is required", null)
+                    }
+                }
+                "sendProvisioningData" -> {
+                    val provisioningData = call.argument<ByteArray>("provisioningData")
+                    if (provisioningData != null) {
+                        sendProvisioningData(provisioningData, result)
+                    } else {
+                        result.error("INVALID_ARGUMENT", "Provisioning data is required", null)
                     }
                 }
                 else -> result.notImplemented()
@@ -78,7 +117,6 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
 
     private fun checkAndRequestPermissions() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            // For Android 12+ (API level 31 and above)
             val permissions = arrayOf(
                 Manifest.permission.BLUETOOTH_SCAN,
                 Manifest.permission.BLUETOOTH_CONNECT,
@@ -92,7 +130,6 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                 startScan()
             }
         } else {
-            // For Android versions below 12 (API level 31)
             val permissions = arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.BLUETOOTH,
@@ -126,6 +163,7 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
             }
         }
     }
+
     @SuppressLint("MissingPermission")
     private fun startScan() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -137,7 +175,6 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
 
         val scanner = bluetoothAdapter.bluetoothLeScanner
         if (scanner == null) {
-            // Log error in case the scanner is null
             methodChannel.invokeMethod("onError", "Bluetooth LE Scanner is null, make sure Bluetooth is enabled")
             return
         }
@@ -146,25 +183,16 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
             .setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY)
             .build()
 
-        // Initialize scanCallback here
         scanCallback = object : ScanCallback() {
-            override fun onScanResult(callbackType: Int, scanResult: ScanResult) {
-                val device = scanResult.device
-
-                // Add a debug log to verify that the callback is working
-                android.util.Log.d("BLE_SCAN", "Device found: ${device.address}")
-
-                // Check if any device is found
+            override fun onScanResult(callbackType: Int, result: ScanResult) {
+                val device = result.device
                 if (device == null) {
                     android.util.Log.d("BLE_SCAN", "Device is null")
                     return
                 }
 
-                // Initialize ProvisioningServiceUUID variable
                 var provisioningServiceUuid: String? = null
-
-                // Check for specific mesh service UUIDs (1827 and 1828)
-                val isMesh = scanResult.scanRecord?.serviceUuids?.any {
+                val isMesh = result.scanRecord?.serviceUuids?.any {
                     val uuidString = it.uuid.toString()
                     when (uuidString.toLowerCase()) {
                         "00001827-0000-1000-8000-00805f9b34fb" -> {
@@ -179,47 +207,38 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                     }
                 } ?: false
 
-                // Create a map of device info to be sent to Flutter
                 val deviceInfo = mapOf(
                     "name" to (device.name ?: "Unknown"),
                     "address" to device.address,
-                    "isMesh" to isMesh,  // Identifies if it's a mesh device based on the UUID check
-                    "provisioningServiceUuid" to (provisioningServiceUuid ?: "None")  // Add the provisioning service UUID to the map
+                    "isMesh" to isMesh,
+                    "provisioningServiceUuid" to (result.scanRecord?.serviceUuids?.firstOrNull()?.uuid?.toString() ?: "None")
                 )
 
-                // Send device information to Flutter through method channel
                 methodChannel.invokeMethod("onDeviceFound", deviceInfo)
-                android.util.Log.d("BLE_SCAN", "Device info sent to Flutter: $deviceInfo")
             }
 
-
             override fun onScanFailed(errorCode: Int) {
-                android.util.Log.d("BLE_SCAN", "Scan failed with error code: $errorCode")
                 methodChannel.invokeMethod("onError", "Scan failed with error code: $errorCode")
             }
         }
 
         try {
-            // Log to verify that scan is starting
-            android.util.Log.d("BLE_SCAN", "Starting scan")
             scanner.startScan(null, scanSettings, scanCallback)
             pendingResult?.success(null)
         } catch (e: Exception) {
-            android.util.Log.d("BLE_SCAN", "Failed to start scan: ${e.message}")
-            pendingResult?.error("SCAN_ERROR", "Failed to start scan: '${e.message}'", null)
+            pendingResult?.error("SCAN_ERROR", "Failed to start scan: ${e.message}", null)
         } finally {
             pendingResult = null
         }
     }
 
-
     @SuppressLint("MissingPermission")
     private fun stopScan(result: MethodChannel.Result) {
         val scanner = bluetoothAdapter.bluetoothLeScanner
-        // Use the same scanCallback that was created in startScan
-        scanCallback?.let { scanner.stopScan(it) }
+        scanCallback?.let { scanner?.stopScan(it) }
         result.success(null)
     }
+
     @SuppressLint("MissingPermission")
     private fun connectToDevice(address: String, result: MethodChannel.Result) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
@@ -235,10 +254,232 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
             return
         }
 
-        disconnect(null) // Disconnect from any existing connection
+        disconnect(null)
 
         gatt = device.connectGatt(context, false, gattCallback)
-        result.success(null) // Indicate that connection process has started
+        result.success(null)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun disconnect(result: MethodChannel.Result?) {
+        gatt?.disconnect()
+        gatt?.close()
+        gatt = null
+//        isServiceDiscoveryComplete = false
+        result?.success(null)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startProvisioning(address: String, result: MethodChannel.Result) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S &&
+                ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return result.error("PERMISSION_DENIED", "Bluetooth connect permission not granted", null)
+            }
+
+            provisioningDevice = bluetoothAdapter.getRemoteDevice(address)
+                ?: return result.error("DEVICE_NOT_FOUND", "Device not found", null)
+
+            disconnect(null)
+
+            provisioningState = ProvisioningState.INVITE
+            gatt = provisioningDevice.connectGatt(context, false, gattCallback)
+            result.success(null)
+        } catch (e: IllegalArgumentException) {
+            result.error("INVALID_ADDRESS", "Invalid Bluetooth address: $address", e.message)
+        } catch (e: Exception) {
+            result.error("START_PROVISIONING_FAILED", "Failed to start provisioning: ${e.message}", null)
+        }
+    }
+
+    private fun sendProvisioningInvite(attentionDuration: Int, result: MethodChannel.Result) {
+        try {
+            if (provisioningState != ProvisioningState.INVITE) {
+                return result.error("INVALID_STATE", "Not in the invitation state", null)
+            }
+
+            if (attentionDuration < 0 || attentionDuration > 255) {
+                return result.error("INVALID_PARAMETER", "Attention duration must be between 0 and 255", null)
+            }
+
+            val invitePdu = byteArrayOf(0x00, 0x00, attentionDuration.toByte())
+            writeProvisioningCharacteristic(invitePdu)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("SEND_INVITE_FAILED", "Failed to send provisioning invite: ${e.message}", null)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun sendProvisioningStart(result: MethodChannel.Result) {
+        if (provisioningState != ProvisioningState.START) {
+            return result.error("INVALID_STATE", "Not in the start state", null)
+        }
+
+        try {
+            val algorithm = 0x00 // Example: FIPS P-256 Elliptic Curve
+            val publicKey = 0x00 // Example: No OOB public key
+            val authenticationMethod = 0x00 // Example: No OOB authentication
+            val authenticationAction = 0x00 // Example: No action required
+            val authenticationSize = 0x00 // Example: No input size
+
+            val startPdu = byteArrayOf(
+                0x02, // Opcode for Provisioning Start
+                algorithm.toByte(),
+                publicKey.toByte(),
+                authenticationMethod.toByte(),
+                authenticationAction.toByte(),
+                authenticationSize.toByte()
+            )
+
+            writeProvisioningCharacteristic(startPdu)
+            provisioningState = ProvisioningState.PUBLIC_KEY_EXCHANGE
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("PROVISIONING_START_FAILED", "Failed to send provisioning start: ${e.message}", null)
+        }
+    }
+
+    private fun sendProvisioningPublicKey(publicKey: ByteArray, result: MethodChannel.Result) {
+        try {
+            if (provisioningState != ProvisioningState.PUBLIC_KEY_EXCHANGE) {
+                return result.error("INVALID_STATE", "Not in the public key exchange state", null)
+            }
+
+            if (publicKey.size != 64) {  // Ensure public key is of correct length
+                return result.error("INVALID_KEY_SIZE", "Public key must be 64 bytes", null)
+            }
+
+            val publicKeyPdu = byteArrayOf(0x03) + publicKey
+            writeProvisioningCharacteristic(publicKeyPdu)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("SEND_PUBLIC_KEY_FAILED", "Failed to send public key: ${e.message}", null)
+        }
+    }
+
+    private fun sendProvisioningConfirmation(confirmation: ByteArray, result: MethodChannel.Result) {
+        try {
+            if (provisioningState != ProvisioningState.CONFIRMATION) {
+                return result.error("INVALID_STATE", "Not in the confirmation state", null)
+            }
+
+            if (confirmation.size != 16) {  // Ensure confirmation is of correct length
+                return result.error("INVALID_CONFIRMATION_SIZE", "Confirmation data must be 16 bytes", null)
+            }
+
+            val confirmationPdu = byteArrayOf(0x05) + confirmation
+            writeProvisioningCharacteristic(confirmationPdu)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("SEND_CONFIRMATION_FAILED", "Failed to send confirmation: ${e.message}", null)
+        }
+    }
+
+    private fun sendProvisioningRandom(random: ByteArray, result: MethodChannel.Result) {
+        try {
+            if (provisioningState != ProvisioningState.RANDOM) {
+                return result.error("INVALID_STATE", "Not in the random state", null)
+            }
+
+            if (random.size != 16) {  // Ensure random is of correct length
+                return result.error("INVALID_RANDOM_SIZE", "Random data must be 16 bytes", null)
+            }
+
+            val randomPdu = byteArrayOf(0x06) + random
+            writeProvisioningCharacteristic(randomPdu)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("SEND_RANDOM_FAILED", "Failed to send random: ${e.message}", null)
+        }
+    }
+
+    private fun sendProvisioningData(provisioningData: ByteArray, result: MethodChannel.Result) {
+        try {
+            if (provisioningState != ProvisioningState.DATA) {
+                return result.error("INVALID_STATE", "Not in the DATA state for provisioning", null)
+            }
+
+            if (provisioningData.isEmpty()) {
+                return result.error("INVALID_DATA", "Provisioning data cannot be empty", null)
+            }
+
+            if (provisioningData.size != EXPECTED_DATA_SIZE) {
+                return result.error("INVALID_DATA_SIZE", "Provisioning data must be $EXPECTED_DATA_SIZE bytes", null)
+            }
+
+            val dataPdu = byteArrayOf(0x07) + provisioningData
+            writeProvisioningCharacteristic(dataPdu)
+            result.success(null)
+        } catch (e: Exception) {
+            result.error("SEND_PROVISIONING_DATA_FAILED", "Failed to send provisioning data: ${e.message}", null)
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun writeProvisioningCharacteristic(data: ByteArray) {
+        try {
+            if (!isServiceDiscoveryComplete) {
+                android.util.Log.e("BleScanner", "Service discovery not complete")
+                methodChannel.invokeMethod("onError", "Service discovery not complete")
+                return
+            }
+
+            val gattLocal = gatt
+            if (gattLocal == null) {
+                android.util.Log.e("BleScanner", "GATT is null")
+                methodChannel.invokeMethod("onError", "GATT is null")
+                return
+            }
+
+            val serviceUuid = provisioningServiceUuid
+            if (serviceUuid == null) {
+                android.util.Log.e("BleScanner", "Provisioning service UUID is null")
+                methodChannel.invokeMethod("onError", "Provisioning service UUID is null")
+                return
+            }
+
+            val characteristicUuid = provisioningCharacteristicUuid
+            if (characteristicUuid == null) {
+                android.util.Log.e("BleScanner", "Provisioning characteristic UUID is null")
+                methodChannel.invokeMethod("onError", "Provisioning characteristic UUID is null")
+                return
+            }
+if(gattLocal.discoverServices()){
+    android.util.Log.e("BleScanner", "discover serivces for UUID: $serviceUuid true")
+}else{
+    android.util.Log.e("BleScanner", "discover serivces for UUID: $serviceUuid false")
+
+}
+
+            val service = gattLocal.getService(serviceUuid)
+            if (service == null) {
+                android.util.Log.e("BleScanner", "Service not found for UUID: $serviceUuid")
+                methodChannel.invokeMethod("onError", "Provisioning service not found")
+                Log.e("BleScanner", "Gatt services: ${gattLocal.services}")
+                return
+            }
+
+            val characteristic = service.getCharacteristic(characteristicUuid)
+            if (characteristic == null) {
+                android.util.Log.e("BleScanner", "Characteristic not found for UUID: $characteristicUuid")
+                methodChannel.invokeMethod("onError", "Provisioning characteristic not found")
+                return
+            }
+
+            characteristic.value = data
+            val writeResult = gattLocal.writeCharacteristic(characteristic)
+            if (writeResult) {
+                android.util.Log.i("BleScanner", "Write initiated successfully")
+            } else {
+                android.util.Log.e("BleScanner", "Failed to initiate write")
+                methodChannel.invokeMethod("onError", "Failed to initiate characteristic write")
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("BleScanner", "Error writing characteristic: ${e.message}", e)
+            methodChannel.invokeMethod("onError", "Error writing characteristic: ${e.message}")
+        }
     }
 
     private val gattCallback = object : BluetoothGattCallback() {
@@ -258,48 +499,98 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                         methodChannel.invokeMethod("onConnectionStateChange", "disconnected")
                     }
                     gatt.close()
-                    this@BleScanner.gatt = null
+                    isServiceDiscoveryComplete = false
                 }
             }
         }
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                android.util.Log.i("BleScanner", "Services discovered.")
-                val services = gatt.services.map { service ->
-                    mapOf(
-                        "uuid" to service.uuid.toString(),
-                        "characteristics" to service.characteristics.map { characteristic ->
-                            mapOf(
-                                "uuid" to characteristic.uuid.toString(),
-                                "properties" to characteristic.properties
-                            )
+                for (service in gatt.services) {
+                    if (service.uuid.toString().startsWith("00001827") || service.uuid.toString().startsWith("00001828")) {
+                        provisioningServiceUuid = service.uuid
+                        for (characteristic in service.characteristics) {
+                            if (characteristic.uuid.toString().startsWith("00002adb")) {
+                                provisioningCharacteristicUuid = characteristic.uuid
+                                break
+                            }
                         }
-                    )
+                        break
+                    }
                 }
-                handler.post {
-                    methodChannel.invokeMethod("onServicesDiscovered", services)
+                if (provisioningServiceUuid != null && provisioningCharacteristicUuid != null) {
+                    isServiceDiscoveryComplete = true
+                    handler.post {
+                        methodChannel.invokeMethod("onProvisioningServiceFound", null)
+                    }
+                } else {
+                    handler.post {
+                        methodChannel.invokeMethod("onError", "Provisioning service or characteristic not found")
+                    }
                 }
             } else {
                 android.util.Log.w("BleScanner", "onServicesDiscovered received: $status")
                 handler.post {
-                    methodChannel.invokeMethod("onError", "Failed to discover services")
+                    methodChannel.invokeMethod("onError", "Service discovery failed")
                 }
             }
         }
+
+        @SuppressLint("MissingPermission")
+        override fun onCharacteristicChanged(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic) {
+            if (characteristic.uuid == provisioningCharacteristicUuid) {
+                val value = characteristic.value
+                if (value != null && value.isNotEmpty()) {
+                    when (value[0].toInt()) {
+                        0x01 -> {
+                            provisioningState = ProvisioningState.START
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningCapabilities", value.slice(1 until value.size).toByteArray())
+                            }
+                        }
+                        0x04 -> {
+                            provisioningState = ProvisioningState.PUBLIC_KEY_EXCHANGE
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningPublicKey", value.slice(1 until value.size).toByteArray())
+                            }
+                        }
+                        0x05 -> {
+                            provisioningState = ProvisioningState.CONFIRMATION
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningConfirmation", value.slice(1 until value.size).toByteArray())
+                            }
+                        }
+                        0x06 -> {
+                            provisioningState = ProvisioningState.RANDOM
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningRandom", value.slice(1 until value.size).toByteArray())
+                            }
+                        }
+                        0x08 -> {
+                            provisioningState = ProvisioningState.COMPLETE
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningComplete", null)
+                            }
+                        }
+                        0x09 -> {
+                            provisioningState = ProvisioningState.FAILED
+                            handler.post {
+                                methodChannel.invokeMethod("onProvisioningFailed", value[1].toInt())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         override fun onCharacteristicRead(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                val value = characteristic.value
                 handler.post {
-                    methodChannel.invokeMethod("onCharacteristicRead", mapOf(
-                        "serviceUuid" to characteristic.service.uuid.toString(),
-                        "characteristicUuid" to characteristic.uuid.toString(),
-                        "value" to value
-                    ))
+                    methodChannel.invokeMethod("onCharacteristicRead", characteristic.value)
                 }
             } else {
                 handler.post {
-                    methodChannel.invokeMethod("onError", "Failed to read characteristic")
+                    methodChannel.invokeMethod("onError", "Characteristic read failed")
                 }
             }
         }
@@ -307,82 +598,17 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
         override fun onCharacteristicWrite(gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 handler.post {
-                    methodChannel.invokeMethod("onCharacteristicWrite", mapOf(
-                        "serviceUuid" to characteristic.service.uuid.toString(),
-                        "characteristicUuid" to characteristic.uuid.toString()
-                    ))
+                    methodChannel.invokeMethod("onCharacteristicWrite", "success")
                 }
             } else {
                 handler.post {
-                    methodChannel.invokeMethod("onError", "Failed to write characteristic")
+                    methodChannel.invokeMethod("onError", "Characteristic write failed")
                 }
             }
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun readCharacteristic(serviceUuid: String, characteristicUuid: String, result: MethodChannel.Result) {
-        val gatt = this.gatt
-        if (gatt == null) {
-            result.error("NOT_CONNECTED", "Not connected to a device", null)
-            return
-        }
-
-        val service = gatt.getService(UUID.fromString(serviceUuid))
-        if (service == null) {
-            result.error("SERVICE_NOT_FOUND", "Service not found", null)
-            return
-        }
-
-        val characteristic = service.getCharacteristic(UUID.fromString(characteristicUuid))
-        if (characteristic == null) {
-            result.error("CHARACTERISTIC_NOT_FOUND", "Characteristic not found", null)
-            return
-        }
-
-        if (!gatt.readCharacteristic(characteristic)) {
-            result.error("READ_FAILED", "Failed to initiate read characteristic", null)
-        } else {
-            result.success(null) // Indicate that read process has started
-        }
+    private enum class ProvisioningState {
+        IDLE, INVITE, START, PUBLIC_KEY_EXCHANGE, CONFIRMATION, RANDOM, DATA, COMPLETE, FAILED
     }
-
-    @SuppressLint("MissingPermission")
-    private fun writeCharacteristic(serviceUuid: String, characteristicUuid: String, value: ByteArray, result: MethodChannel.Result) {
-        val gatt = this.gatt
-        if (gatt == null) {
-            result.error("NOT_CONNECTED", "Not connected to a device", null)
-            return
-        }
-
-        val service = gatt.getService(UUID.fromString(serviceUuid))
-        if (service == null) {
-            result.error("SERVICE_NOT_FOUND", "Service not found", null)
-            return
-        }
-
-        val characteristic = service.getCharacteristic(UUID.fromString(characteristicUuid))
-        if (characteristic == null) {
-            result.error("CHARACTERISTIC_NOT_FOUND", "Characteristic not found", null)
-            return
-        }
-
-        characteristic.value = value
-        if (!gatt.writeCharacteristic(characteristic)) {
-            result.error("WRITE_FAILED", "Failed to initiate write characteristic", null)
-        } else {
-            result.success(null) // Indicate that write process has started
-        }
-    }
-
-    @SuppressLint("MissingPermission")
-    private fun disconnect(result: MethodChannel.Result?) {
-        gatt?.disconnect()
-        gatt?.close()
-        gatt = null
-        result?.success(null)
-    }
-
-
-
 }

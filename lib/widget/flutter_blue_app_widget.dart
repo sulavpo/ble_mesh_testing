@@ -21,7 +21,7 @@ class _BleScannerState extends State<BleScanner> {
   @override
   void initState() {
     super.initState();
-    
+
     // Set callbacks from BleManager
     _bleManager.onDeviceFound = (device) {
       // Check if the device is already in the list
@@ -134,12 +134,14 @@ class _BleScannerState extends State<BleScanner> {
                       final device = devices[index];
                       return ListTile(
                         trailing: device['isMesh']
-                            ? Text(device['provisioningServiceUuid'] == '1827'
+                            ? Text(device['isMesh'] && device['provisioningServiceUuid'].startsWith('00001827')
                                 ? 'UnProvisioned'
                                 : 'Provisioned')
                             : null,
                         leading: Icon(
-                          device['isMesh'] ? Icons.network_wifi : Icons.bluetooth,
+                          device['isMesh']
+                              ? Icons.network_wifi
+                              : Icons.bluetooth,
                           color: device['isMesh'] ? Colors.green : Colors.blue,
                         ),
                         title: Text(device['name']),
@@ -149,7 +151,8 @@ class _BleScannerState extends State<BleScanner> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => DeviceDetailScreen(device: device),
+                                builder: (context) =>
+                                    DeviceDetailScreen(device: device),
                               ),
                             );
                           }

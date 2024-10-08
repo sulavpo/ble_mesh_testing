@@ -1,5 +1,6 @@
-import 'package:ble_testing/controller/ble_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:ble_testing/controller/ble_manager.dart';
+import 'dart:typed_data';
 
 class DeviceDetailScreen extends StatefulWidget {
   final Map<String, dynamic> device;
@@ -11,16 +12,77 @@ class DeviceDetailScreen extends StatefulWidget {
 }
 
 class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
-  final BleManager _bleManager = BleManager(); // Instantiate BleManager
+  final BleManager _bleManager = BleManager();
   bool isConnecting = false;
   bool isConnected = false;
   String connectionStatus = '';
-  Map<String, dynamic>? deviceCapabilities;
+  String provisioningStatus = '';
 
   @override
   void initState() {
     super.initState();
     connectToDevice();
+    setupBleCallbacks();
+  }
+
+  void setupBleCallbacks() {
+    _bleManager.onConnectionStateChange = (state) {
+      setState(() {
+        isConnected = state == 'connected';
+        connectionStatus = state;
+      });
+    };
+
+    _bleManager.onProvisioningServiceFound = () {
+      setState(() {
+        provisioningStatus = 'Provisioning service found';
+      });
+    };
+
+    _bleManager.onProvisioningCapabilities = (capabilities) {
+      setState(() {
+        provisioningStatus = 'Received capabilities: ${capabilities.toString()}';
+      });
+      // Process capabilities here
+    };
+
+    _bleManager.onProvisioningPublicKey = (publicKey) {
+      setState(() {
+        provisioningStatus = 'Received public key: ${publicKey.toString()}';
+      });
+      // Process public key here
+    };
+
+    _bleManager.onProvisioningConfirmation = (confirmation) {
+      setState(() {
+        provisioningStatus = 'Received confirmation: ${confirmation.toString()}';
+      });
+      // Process confirmation here
+    };
+
+    _bleManager.onProvisioningRandom = (random) {
+      setState(() {
+        provisioningStatus = 'Received random: ${random.toString()}';
+      });
+      // Process random here
+    };
+
+    _bleManager.onProvisioningComplete = () {
+      setState(() {
+        provisioningStatus = 'Provisioning complete';
+      });
+    };
+
+    _bleManager.onProvisioningFailed = (errorData) {
+      setState(() {
+        provisioningStatus = 'Provisioning failed: ${errorData.toString()}';
+      });
+      showErrorDialog('Provisioning failed: ${errorData.toString()}');
+    };
+
+    _bleManager.onError = (error) {
+      showErrorDialog(error);
+    };
   }
 
   Future<void> connectToDevice() async {
@@ -30,12 +92,7 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     });
 
     try {
-       await _bleManager.connect(widget.device['address']);
-      setState(() {
-        isConnecting = false;
-        isConnected = true;// Assume connection is successful, update logic accordingly.
-        connectionStatus = isConnected ? 'Connected' : 'Connection failed';
-      });
+      await _bleManager.connect(widget.device['address']);
     } catch (e) {
       setState(() {
         isConnecting = false;
@@ -45,53 +102,37 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
     }
   }
 
-  // Future<void> startProvisioning() async {
-  //   try {
-  //     final capabilities = await _bleManager.startProvisioning(widget.device['address']);
-  //     setState(() {
-  //       deviceCapabilities = capabilities;
-  //     });
+  Future<void> startProvisioning() async {
+    setState(() {
+      provisioningStatus = 'Starting provisioning...';
+    });
 
-  //     showCapabilitiesDialog(); // Show capabilities in a dialog
-  //   } catch (e) {
-  //     print('Provisioning error: $e');
-  //     showErrorDialog(e.toString()); // Handle provisioning errors
-  //   }
-  // }
+    try {
+      await _bleManager.startProvisioning(widget.device['address']);
+      // After starting provisioning, send the invitation
+      await sendProvisioningInvite();
+    } catch (e) {
+      setState(() {
+        provisioningStatus = 'Provisioning failed: $e';
+      });
+      showErrorDialog(e.toString());
+    }
+  }
 
-  void showCapabilitiesDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Device Capabilities'),
-          content: deviceCapabilities != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text('Number of Elements: ${deviceCapabilities!['numberOfElements']}'),
-                    Text('Algorithms: ${deviceCapabilities!['algorithms']}'),
-                    Text('Public Key Type: ${deviceCapabilities!['publicKeyType']}'),
-                    Text('Static OOB Type: ${deviceCapabilities!['staticOobType']}'),
-                    Text('Output OOB Size: ${deviceCapabilities!['outputOobSize']}'),
-                    Text('Output OOB Actions: ${deviceCapabilities!['outputOobActions']}'),
-                    Text('Input OOB Size: ${deviceCapabilities!['inputOobSize']}'),
-                    Text('Input OOB Actions: ${deviceCapabilities!['inputOobActions']}'),
-                  ],
-                )
-              : const Text('No capabilities data available'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+  Future<void> sendProvisioningInvite() async {
+    setState(() {
+      provisioningStatus = 'Sending provisioning invite...';
+    });
+
+    try {
+      // Send a provisioning invite with an attention duration of 5 seconds
+      await _bleManager.sendProvisioningInvite(5);
+    } catch (e) {
+      setState(() {
+        provisioningStatus = 'Failed to send provisioning invite: $e';
+      });
+      showErrorDialog(e.toString());
+    }
   }
 
   void showErrorDialog(String errorMessage) {
@@ -128,14 +169,16 @@ class _DeviceDetailScreenState extends State<DeviceDetailScreen> {
             Text('Name: ${widget.device['name']}'),
             Text('Address: ${widget.device['address']}'),
             Text('Provisioning Service UUID: ${widget.device['provisioningServiceUuid']}'),
-            Text('Status: ${widget.device['provisioningServiceUuid'] == '1827' ? 'UnProvisioned' : 'Provisioned'}'),
+            Text('Status: ${widget.device['provisioningServiceUuid'] == '1827' ? 'Unprovisioned' : 'Provisioned'}'),
             const SizedBox(height: 20),
             Text('Connection Status: $connectionStatus'),
             const SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: isConnected ? startProvisioning : null,
-            //   child: const Text('Identify'),
-            // ),
+            Text('Provisioning Status: $provisioningStatus'),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: isConnected ? startProvisioning : null,
+              child: const Text('Start Provisioning'),
+            ),
           ],
         ),
       ),
