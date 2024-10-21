@@ -452,7 +452,7 @@ if(gattLocal.discoverServices()){
     android.util.Log.e("BleScanner", "discover serivces for UUID: $serviceUuid false")
 
 }
-
+            gatt!!.javaClass.getMethod("refresh")
             val service = gattLocal.getService(serviceUuid)
             if (service == null) {
                 android.util.Log.e("BleScanner", "Service not found for UUID: $serviceUuid")
