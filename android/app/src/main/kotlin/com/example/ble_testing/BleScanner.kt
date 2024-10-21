@@ -39,7 +39,9 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     private var isServiceDiscoveryComplete = false
     private var retryCount = 0
     private val MAX_RETRIES = 3
-
+    private var serviceDiscoveryRetries = 0
+    private val MAX_SERVICE_DISCOVERY_RETRIES = 5
+    private val SERVICE_DISCOVERY_TIMEOUT = 10000L // 10 seconds
     init {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager.adapter
@@ -420,9 +422,12 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     @SuppressLint("MissingPermission")
     private fun writeProvisioningCharacteristic(data: ByteArray) {
         try {
+//
             if (!isServiceDiscoveryComplete) {
-                android.util.Log.e("BleScanner", "Service discovery not complete")
-                methodChannel.invokeMethod("onError", "Service discovery not complete")
+                android.util.Log.w("BleScanner", "Service discovery not complete, initiating discovery...")
+                initiateServiceDiscovery()
+                // Retry after a short delay
+                handler.postDelayed({ writeProvisioningCharacteristic(data) }, SERVICE_DISCOVERY_TIMEOUT)
                 return
             }
 
@@ -446,18 +451,14 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                 methodChannel.invokeMethod("onError", "Provisioning characteristic UUID is null")
                 return
             }
-if(gattLocal.discoverServices()){
-    android.util.Log.e("BleScanner", "discover serivces for UUID: $serviceUuid true")
-}else{
-    android.util.Log.e("BleScanner", "discover serivces for UUID: $serviceUuid false")
 
-}
-            gatt!!.javaClass.getMethod("refresh")
             val service = gattLocal.getService(serviceUuid)
             if (service == null) {
                 android.util.Log.e("BleScanner", "Service not found for UUID: $serviceUuid")
+                logAvailableServices(gattLocal)
                 methodChannel.invokeMethod("onError", "Provisioning service not found")
-                Log.e("BleScanner", "Gatt services: ${gattLocal.services}")
+                // Attempt to rediscover services
+                initiateServiceDiscovery()
                 return
             }
 
@@ -481,6 +482,36 @@ if(gattLocal.discoverServices()){
             methodChannel.invokeMethod("onError", "Error writing characteristic: ${e.message}")
         }
     }
+    private fun initiateServiceDiscovery() {
+        if (serviceDiscoveryRetries < MAX_SERVICE_DISCOVERY_RETRIES) {
+            serviceDiscoveryRetries++
+            android.util.Log.w("BleScanner", "Initiating service discovery (Attempt $serviceDiscoveryRetries)")
+            gatt?.discoverServices()
+
+            // Set a timeout for service discovery
+            handler.postDelayed({
+                if (!isServiceDiscoveryComplete) {
+                    android.util.Log.e("BleScanner", "Service discovery timed out")
+                    methodChannel.invokeMethod("onError", "Service discovery timed out")
+                    disconnect(null)
+                }
+            }, SERVICE_DISCOVERY_TIMEOUT)
+        } else {
+            android.util.Log.e("BleScanner", "Service discovery failed after $MAX_SERVICE_DISCOVERY_RETRIES attempts")
+            methodChannel.invokeMethod("onError", "Service discovery failed after multiple attempts")
+            disconnect(null)
+        }
+    }
+
+    private fun logAvailableServices(gatt: BluetoothGatt) {
+        android.util.Log.d("BleScanner", "Available services:")
+        gatt.services.forEach { service ->
+            android.util.Log.d("BleScanner", "Service UUID: ${service.uuid}")
+            service.characteristics.forEach { characteristic ->
+                android.util.Log.d("BleScanner", "  Characteristic UUID: ${characteristic.uuid}")
+            }
+        }
+    }
 
     private val gattCallback = object : BluetoothGattCallback() {
         @SuppressLint("MissingPermission")
@@ -491,7 +522,11 @@ if(gattLocal.discoverServices()){
                     handler.post {
                         methodChannel.invokeMethod("onConnectionStateChange", "connected")
                     }
-                    gatt.discoverServices()
+                    // Reset service discovery related variables
+                    isServiceDiscoveryComplete = false
+                    serviceDiscoveryRetries = 0
+                    // Initiate service discovery
+                    initiateServiceDiscovery()
                 }
                 BluetoothProfile.STATE_DISCONNECTED -> {
                     android.util.Log.i("BleScanner", "Disconnected from GATT server.")
@@ -506,6 +541,9 @@ if(gattLocal.discoverServices()){
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
+                android.util.Log.i("BleScanner", "Services discovered successfully")
+                logAvailableServices(gatt)
+
                 for (service in gatt.services) {
                     if (service.uuid.toString().startsWith("00001827") || service.uuid.toString().startsWith("00001828")) {
                         provisioningServiceUuid = service.uuid
@@ -518,21 +556,23 @@ if(gattLocal.discoverServices()){
                         break
                     }
                 }
+
                 if (provisioningServiceUuid != null && provisioningCharacteristicUuid != null) {
                     isServiceDiscoveryComplete = true
+                    serviceDiscoveryRetries = 0
                     handler.post {
                         methodChannel.invokeMethod("onProvisioningServiceFound", null)
                     }
                 } else {
+                    android.util.Log.e("BleScanner", "Provisioning service or characteristic not found")
                     handler.post {
                         methodChannel.invokeMethod("onError", "Provisioning service or characteristic not found")
                     }
+                    initiateServiceDiscovery()
                 }
             } else {
                 android.util.Log.w("BleScanner", "onServicesDiscovered received: $status")
-                handler.post {
-                    methodChannel.invokeMethod("onError", "Service discovery failed")
-                }
+                initiateServiceDiscovery()
             }
         }
 
