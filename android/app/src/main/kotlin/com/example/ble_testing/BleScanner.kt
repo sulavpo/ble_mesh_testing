@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.util.Log
 import java.util.*
 
@@ -42,6 +43,16 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     private var serviceDiscoveryRetries = 0
     private val MAX_SERVICE_DISCOVERY_RETRIES = 5
     private val SERVICE_DISCOVERY_TIMEOUT = 10000L // 10 seconds
+    private val PROVISIONING_SERVICE_UUID_1827 = UUID.fromString("00001827-0000-1000-8000-00805f9b34fb")
+    private val PROVISIONING_SERVICE_UUID_1828 = UUID.fromString("00001828-0000-1000-8000-00805f9b34fb")
+    private val PROVISIONING_CHARACTERISTIC_UUID = UUID.fromString("00002adb-0000-1000-8000-00805f9b34fb")
+    // Add PDU type enum
+    private enum class PduType {
+        PROVISIONING,
+        PROXY,
+        UNKNOWN
+    }
+
     init {
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         bluetoothAdapter = bluetoothManager.adapter
@@ -114,6 +125,14 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                 }
                 else -> result.notImplemented()
             }
+        }
+    }
+    // Function to determine PDU type based on service UUID
+    private fun determineServiceType(serviceUuid: UUID): PduType {
+        return when (serviceUuid.toString().toLowerCase()) {
+            "00001827-0000-1000-8000-00805f9b34fb" -> PduType.PROVISIONING
+            "00001828-0000-1000-8000-00805f9b34fb" -> PduType.PROXY
+            else -> PduType.UNKNOWN
         }
     }
 
@@ -199,10 +218,6 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                     when (uuidString.toLowerCase()) {
                         "00001827-0000-1000-8000-00805f9b34fb" -> {
                             provisioningServiceUuid = "1827"
-                            true
-                        }
-                        "00001828-0000-1000-8000-00805f9b34fb" -> {
-                            provisioningServiceUuid = "1828"
                             true
                         }
                         else -> false
@@ -422,63 +437,53 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
     @SuppressLint("MissingPermission")
     private fun writeProvisioningCharacteristic(data: ByteArray) {
         try {
-//
             if (!isServiceDiscoveryComplete) {
-                android.util.Log.w("BleScanner", "Service discovery not complete, initiating discovery...")
+                Log.w(TAG, "Service discovery not complete, initiating discovery...")
                 initiateServiceDiscovery()
-                // Retry after a short delay
                 handler.postDelayed({ writeProvisioningCharacteristic(data) }, SERVICE_DISCOVERY_TIMEOUT)
                 return
             }
 
-            val gattLocal = gatt
-            if (gattLocal == null) {
-                android.util.Log.e("BleScanner", "GATT is null")
-                methodChannel.invokeMethod("onError", "GATT is null")
+            val gattLocal = gatt ?: throw IllegalStateException("GATT is null")
+            val serviceUuid = provisioningServiceUuid ?: throw IllegalStateException("Provisioning service UUID is null")
+            val characteristicUuid = provisioningCharacteristicUuid ?: throw IllegalStateException("Provisioning characteristic UUID is null")
+
+            // Determine PDU type based on service
+            val pduType = determineServiceType(serviceUuid)
+            Log.d(TAG, "Attempting to write ${pduType.name} PDU")
+            Log.d(TAG, "PDU Data: ${data.joinToString(", ") { "0x%02X".format(it) }}")
+
+            // Validate PDU type matches service
+            if (pduType == PduType.UNKNOWN) {
+                Log.e(TAG, "Unknown service type for UUID: $serviceUuid")
+                methodChannel.invokeMethod("onError", "Unknown service type")
                 return
             }
 
-            val serviceUuid = provisioningServiceUuid
-            if (serviceUuid == null) {
-                android.util.Log.e("BleScanner", "Provisioning service UUID is null")
-                methodChannel.invokeMethod("onError", "Provisioning service UUID is null")
-                return
-            }
+            val service = gattLocal.getService(serviceUuid) ?: throw IllegalStateException("Service not found for UUID: $serviceUuid")
+            val characteristic = service.getCharacteristic(characteristicUuid) ?: throw IllegalStateException("Characteristic not found for UUID: $characteristicUuid")
 
-            val characteristicUuid = provisioningCharacteristicUuid
-            if (characteristicUuid == null) {
-                android.util.Log.e("BleScanner", "Provisioning characteristic UUID is null")
-                methodChannel.invokeMethod("onError", "Provisioning characteristic UUID is null")
-                return
-            }
-
-            val service = gattLocal.getService(serviceUuid)
-            if (service == null) {
-                android.util.Log.e("BleScanner", "Service not found for UUID: $serviceUuid")
-                logAvailableServices(gattLocal)
-                methodChannel.invokeMethod("onError", "Provisioning service not found")
-                // Attempt to rediscover services
-                initiateServiceDiscovery()
-                return
-            }
-
-            val characteristic = service.getCharacteristic(characteristicUuid)
-            if (characteristic == null) {
-                android.util.Log.e("BleScanner", "Characteristic not found for UUID: $characteristicUuid")
-                methodChannel.invokeMethod("onError", "Provisioning characteristic not found")
-                return
-            }
+            // Log PDU details
+            Log.d(TAG, """
+                Writing ${pduType.name} PDU:
+                - Service UUID: $serviceUuid
+                - Characteristic UUID: $characteristicUuid
+                - Data Length: ${data.size}
+                - First Byte (Opcode): 0x${"%02X".format(data[0])}
+                - Full Data: ${data.joinToString(", ") { "0x%02X".format(it) }}
+            """.trimIndent())
 
             characteristic.value = data
             val writeResult = gattLocal.writeCharacteristic(characteristic)
+
             if (writeResult) {
-                android.util.Log.i("BleScanner", "Write initiated successfully")
+                Log.i(TAG, "${pduType.name} PDU write initiated successfully")
             } else {
-                android.util.Log.e("BleScanner", "Failed to initiate write")
+                Log.e(TAG, "${pduType.name} PDU write failed to initiate")
                 methodChannel.invokeMethod("onError", "Failed to initiate characteristic write")
             }
         } catch (e: Exception) {
-            android.util.Log.e("BleScanner", "Error writing characteristic: ${e.message}", e)
+            Log.e(TAG, "Error writing characteristic: ${e.message}", e)
             methodChannel.invokeMethod("onError", "Error writing characteristic: ${e.message}")
         }
     }
@@ -503,14 +508,26 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
         }
     }
 
+    // Enhanced logging for service discovery
     private fun logAvailableServices(gatt: BluetoothGatt) {
-        android.util.Log.d("BleScanner", "Available services:")
+        Log.d(TAG, "=== Available Services ===")
         gatt.services.forEach { service ->
-            android.util.Log.d("BleScanner", "Service UUID: ${service.uuid}")
+            val serviceType = determineServiceType(service.uuid)
+            Log.d(TAG, "Service UUID: ${service.uuid} (Type: $serviceType)")
             service.characteristics.forEach { characteristic ->
-                android.util.Log.d("BleScanner", "  Characteristic UUID: ${characteristic.uuid}")
+                Log.d(TAG, "  └── Characteristic UUID: ${characteristic.uuid}")
+                Log.d(TAG, "      Properties: ${getCharacteristicProperties(characteristic)}")
             }
         }
+        Log.d(TAG, "=====================")
+    }
+    // Helper function to decode characteristic properties
+    private fun getCharacteristicProperties(characteristic: BluetoothGattCharacteristic): String {
+        val props = mutableListOf<String>()
+        if ((characteristic.properties and BluetoothGattCharacteristic.PROPERTY_READ) != 0) props.add("READ")
+        if ((characteristic.properties and BluetoothGattCharacteristic.PROPERTY_WRITE) != 0) props.add("WRITE")
+        if ((characteristic.properties and BluetoothGattCharacteristic.PROPERTY_NOTIFY) != 0) props.add("NOTIFY")
+        return props.joinToString(", ")
     }
 
     private val gattCallback = object : BluetoothGattCallback() {
@@ -541,19 +558,36 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
 
         override fun onServicesDiscovered(gatt: BluetoothGatt, status: Int) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                android.util.Log.i("BleScanner", "Services discovered successfully")
+                Log.i(TAG, "Services discovered successfully")
                 logAvailableServices(gatt)
 
+                var foundService: BluetoothGattService? = null
+                var serviceType: PduType = PduType.UNKNOWN
+
+                // Try to find either Provisioning or Proxy service
                 for (service in gatt.services) {
-                    if (service.uuid.toString().startsWith("00001827") || service.uuid.toString().startsWith("00001828")) {
-                        provisioningServiceUuid = service.uuid
-                        for (characteristic in service.characteristics) {
-                            if (characteristic.uuid.toString().startsWith("00002adb")) {
-                                provisioningCharacteristicUuid = characteristic.uuid
-                                break
-                            }
-                        }
+                    val currentType = determineServiceType(service.uuid)
+                    if (currentType != PduType.UNKNOWN) {
+                        foundService = service
+                        serviceType = currentType
                         break
+                    }
+                }
+
+                when (serviceType) {
+                    PduType.PROVISIONING -> {
+                        Log.i(TAG, "Found Provisioning service")
+                        provisioningServiceUuid = foundService?.uuid
+                        provisioningCharacteristicUuid = foundService?.characteristics?.find {
+                            it.uuid == PROVISIONING_CHARACTERISTIC_UUID
+                        }?.uuid
+                    }
+                    PduType.PROXY -> {
+                        Log.i(TAG, "Found Proxy service")
+                        // Handle proxy service if needed
+                    }
+                    PduType.UNKNOWN -> {
+                        Log.e(TAG, "Neither Provisioning nor Proxy service found")
                     }
                 }
 
@@ -564,14 +598,14 @@ class BleScanner(private val context: Context, flutterEngine: FlutterEngine) {
                         methodChannel.invokeMethod("onProvisioningServiceFound", null)
                     }
                 } else {
-                    android.util.Log.e("BleScanner", "Provisioning service or characteristic not found")
+                    Log.e(TAG, "Required service or characteristic not found")
                     handler.post {
-                        methodChannel.invokeMethod("onError", "Provisioning service or characteristic not found")
+                        methodChannel.invokeMethod("onError", "Required service or characteristic not found")
                     }
                     initiateServiceDiscovery()
                 }
             } else {
-                android.util.Log.w("BleScanner", "onServicesDiscovered received: $status")
+                Log.w(TAG, "Service discovery failed with status: $status")
                 initiateServiceDiscovery()
             }
         }

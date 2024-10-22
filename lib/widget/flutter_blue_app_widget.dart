@@ -147,7 +147,7 @@ class _BleScannerState extends State<BleScanner> {
                         title: Text(device['name']),
                         subtitle: Text(device['address']),
                         onTap: () {
-                          if (device['isMesh']) {
+                          // if (device['isMesh']) {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
@@ -155,7 +155,7 @@ class _BleScannerState extends State<BleScanner> {
                                     DeviceDetailScreen(device: device),
                               ),
                             );
-                          }
+                          // }
                         },
                       );
                     },
