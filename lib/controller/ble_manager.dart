@@ -1,14 +1,17 @@
+
+
 import 'dart:async';
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class BleManager {
-  static const MethodChannel _channel = MethodChannel('com.example.ble_scanner/ble');
+  static const MethodChannel _channel =
+      MethodChannel('com.example.ble_scanner/ble');
 
   // Define callbacks
   void Function(Map<String, dynamic>)? onDeviceFound;
   void Function(String)? onConnectionStateChange;
-  void Function(List<Map<String, dynamic>>)? onServicesDiscovered;
   void Function(Map<String, dynamic>)? onCharacteristicRead;
   void Function(Map<String, dynamic>)? onCharacteristicWrite;
   void Function()? onProvisioningServiceFound;
@@ -17,7 +20,7 @@ class BleManager {
   void Function(Uint8List)? onProvisioningConfirmation;
   void Function(Uint8List)? onProvisioningRandom;
   void Function()? onProvisioningComplete;
-  void Function(Uint8List)? onProvisioningFailed;
+  void Function(int)? onProvisioningFailed;
   void Function(String)? onError;
 
   BleManager() {
@@ -32,9 +35,6 @@ class BleManager {
       case 'onConnectionStateChange':
         onConnectionStateChange?.call(call.arguments as String);
         break;
-      case 'onServicesDiscovered':
-        onServicesDiscovered?.call(List<Map<String, dynamic>>.from(call.arguments));
-        break;
       case 'onCharacteristicRead':
         onCharacteristicRead?.call(Map<String, dynamic>.from(call.arguments));
         break;
@@ -45,22 +45,26 @@ class BleManager {
         onProvisioningServiceFound?.call();
         break;
       case 'onProvisioningCapabilities':
-        onProvisioningCapabilities?.call(Uint8List.fromList(call.arguments));
+        onProvisioningCapabilities
+            ?.call(Uint8List.fromList(List<int>.from(call.arguments)));
         break;
       case 'onProvisioningPublicKey':
-        onProvisioningPublicKey?.call(Uint8List.fromList(call.arguments));
+        onProvisioningPublicKey
+            ?.call(Uint8List.fromList(List<int>.from(call.arguments)));
         break;
       case 'onProvisioningConfirmation':
-        onProvisioningConfirmation?.call(Uint8List.fromList(call.arguments));
+        onProvisioningConfirmation
+            ?.call(Uint8List.fromList(List<int>.from(call.arguments)));
         break;
       case 'onProvisioningRandom':
-        onProvisioningRandom?.call(Uint8List.fromList(call.arguments));
+        onProvisioningRandom
+            ?.call(Uint8List.fromList(List<int>.from(call.arguments)));
         break;
       case 'onProvisioningComplete':
         onProvisioningComplete?.call();
         break;
       case 'onProvisioningFailed':
-        onProvisioningFailed?.call(Uint8List.fromList(call.arguments));
+        onProvisioningFailed?.call(call.arguments as int);
         break;
       case 'onError':
         onError?.call(call.arguments as String);
@@ -100,18 +104,6 @@ class BleManager {
     }
   }
 
-  Future<void> writeCharacteristic(String serviceUuid, String characteristicUuid, Uint8List value) async {
-    try {
-      await _channel.invokeMethod('writeCharacteristic', {
-        'serviceUuid': serviceUuid,
-        'characteristicUuid': characteristicUuid,
-        'value': value,
-      });
-    } on PlatformException catch (e) {
-      onError?.call('Failed to write characteristic: ${e.message}');
-    }
-  }
-
   Future<void> startProvisioning(String address) async {
     try {
       await _channel.invokeMethod('startProvisioning', {'address': address});
@@ -122,15 +114,36 @@ class BleManager {
 
   Future<void> sendProvisioningInvite(int attentionDuration) async {
     try {
-      await _channel.invokeMethod('sendProvisioningInvite', {'attentionDuration': attentionDuration});
+      await _channel.invokeMethod(
+          'sendProvisioningInvite', {'attentionDuration': attentionDuration});
     } on PlatformException catch (e) {
       onError?.call('Failed to send provisioning invite: ${e.message}');
     }
   }
 
+  Future<void> sendProvisioningStart() async {
+    try {
+      await _channel.invokeMethod('sendProvisioningStart');
+      log('Provisioning start sent');
+    } on PlatformException catch (e) {
+      onError?.call('Failed to send provisioning start: ${e.message}');
+      log('Provisioning start failed');
+    }
+  }
+
+  Future<void> sendProvisioningPublicKey(Uint8List publicKey) async {
+    try {
+      await _channel
+          .invokeMethod('sendProvisioningPublicKey', {'publicKey': publicKey});
+    } on PlatformException catch (e) {
+      onError?.call('Failed to send public key: ${e.message}');
+    }
+  }
+
   Future<void> sendProvisioningConfirmation(Uint8List confirmation) async {
     try {
-      await _channel.invokeMethod('sendProvisioningConfirmation', {'confirmation': confirmation});
+      await _channel.invokeMethod(
+          'sendProvisioningConfirmation', {'confirmation': confirmation});
     } on PlatformException catch (e) {
       onError?.call('Failed to send provisioning confirmation: ${e.message}');
     }
@@ -146,7 +159,8 @@ class BleManager {
 
   Future<void> sendProvisioningData(Uint8List provisioningData) async {
     try {
-      await _channel.invokeMethod('sendProvisioningData', {'provisioningData': provisioningData});
+      await _channel.invokeMethod(
+          'sendProvisioningData', {'provisioningData': provisioningData});
     } on PlatformException catch (e) {
       onError?.call('Failed to send provisioning data: ${e.message}');
     }
