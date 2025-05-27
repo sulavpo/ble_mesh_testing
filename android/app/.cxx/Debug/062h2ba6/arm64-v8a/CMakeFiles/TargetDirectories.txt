@@ -1,0 +1,2 @@
+/Users/sulavpoudel/Desktop/ref/ble_mesh_testing/android/app/.cxx/Debug/062h2ba6/arm64-v8a/CMakeFiles/edit_cache.dir
+/Users/sulavpoudel/Desktop/ref/ble_mesh_testing/android/app/.cxx/Debug/062h2ba6/arm64-v8a/CMakeFiles/rebuild_cache.dir

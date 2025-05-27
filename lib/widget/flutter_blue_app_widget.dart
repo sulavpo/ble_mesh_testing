@@ -2,8 +2,8 @@ import 'dart:async'; // Import for Timer
 import 'dart:developer';
 import 'package:ble_testing/controller/ble_manager.dart';
 import 'package:ble_testing/screen/device_detail_sceen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 class BleScanner extends StatefulWidget {
   const BleScanner({super.key});
@@ -52,7 +52,9 @@ class _BleScannerState extends State<BleScanner> {
         stopScan();
       });
     } catch (e) {
-      print('An unexpected error occurred: $e');
+      if (kDebugMode) {
+        print('An unexpected error occurred: $e');
+      }
       _showAlertDialog(
         title: 'Unexpected Error',
         content: 'An unexpected error occurred: $e',
@@ -67,7 +69,9 @@ class _BleScannerState extends State<BleScanner> {
     try {
       await _bleManager.stopScan();
     } catch (e) {
-      print("Failed to stop scan: '$e'.");
+      if (kDebugMode) {
+        print("Failed to stop scan: '$e'.");
+      }
     }
 
     setState(() {
@@ -134,7 +138,9 @@ class _BleScannerState extends State<BleScanner> {
                       final device = devices[index];
                       return ListTile(
                         trailing: device['isMesh']
-                            ? Text(device['isMesh'] && device['provisioningServiceUuid'].startsWith('00001827')
+                            ? Text(device['isMesh'] &&
+                                    device['provisioningServiceUuid']
+                                        .startsWith('00001827')
                                 ? 'UnProvisioned'
                                 : 'Provisioned')
                             : null,
@@ -148,13 +154,13 @@ class _BleScannerState extends State<BleScanner> {
                         subtitle: Text(device['address']),
                         onTap: () {
                           // if (device['isMesh']) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    DeviceDetailScreen(device: device),
-                              ),
-                            );
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  DeviceDetailScreen(device: device),
+                            ),
+                          );
                           // }
                         },
                       );

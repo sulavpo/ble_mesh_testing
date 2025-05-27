@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ble_testing/controller/ble_manager.dart';
-import 'dart:typed_data';
 import 'dart:math';
 import 'package:flutter/services.dart';
 

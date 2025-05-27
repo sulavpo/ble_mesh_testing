@@ -2,7 +2,6 @@
 
 import 'dart:async';
 import 'dart:developer';
-import 'dart:typed_data';
 import 'package:flutter/services.dart';
 
 class BleManager {
