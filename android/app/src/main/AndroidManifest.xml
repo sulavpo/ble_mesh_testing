@@ -12,7 +12,8 @@ package="com.example.ble_testing">
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:required="true" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" android:required="true" />
 
-
+    <!-- BLE features -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
 
     <application
         android:label="ble_testing"
