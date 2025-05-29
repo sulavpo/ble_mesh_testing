@@ -1,0 +1,1 @@
+/Users/sulavpoudel/Desktop/ble_mesh_testing/build/app/intermediates/cxx/Debug/n3z5m32v/obj/armeabi-v7a
